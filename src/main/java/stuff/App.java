@@ -22,7 +22,6 @@ import javafx.stage.Stage;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 
 import java.io.*;
 import java.util.*;
@@ -74,6 +73,7 @@ public class App extends Application implements EventHandler<ActionEvent> {
         messages = new ArrayList<>();
         foundConfig = false;
         stopFlag = false;
+        username = "";
 
         // Create new web client
         webClient = new WebClient();
@@ -209,9 +209,11 @@ public class App extends Application implements EventHandler<ActionEvent> {
         stage.show();
 
         // Login if previously logged in
-        if (foundConfig && props.getProperty("username") != null) {
+        if (foundConfig && props.getProperty("username") != null && !props.getProperty("username").equals("")) {
             String jsonFilename = props.getProperty("username") + ".json";
             login(new File(jsonFilename), true);
+        } else {
+            veil.setVisible(false);
         }
     }
 
@@ -808,7 +810,7 @@ public class App extends Application implements EventHandler<ActionEvent> {
              */
             private void setProgress(double current, double max) {
                 updateProgress(current, max);
-                Platform.runLater(() -> progressLabel.setText(current + "/" + max));
+                Platform.runLater(() -> progressLabel.setText((int) current + "/" + (int) max));
             }
         }
 
