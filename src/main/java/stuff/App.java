@@ -273,235 +273,261 @@ public class App extends Application implements EventHandler<ActionEvent> {
      * @param userFile user profile JSON.
      * @param useCookie log in using a cookie.
      */
-    private void login(File userFile, boolean useCookie) {
-
+    private void login(File userFile, boolean useCookie)
+    {
         // Task for loading JSON file
         class LoadJsonTask extends Task<Void> {
 
-            private boolean loadedJSON = false;
             private String tempUsername;
             private String tempPassword;
             private ArrayList<String> tempMessages = new ArrayList<>();
 
             @Override
-            protected Void call() {
+            protected Void call() throws Exception
+            {
+                // Create JSON object
+                Object obj = new JSONParser().parse(new FileReader(userFile));
+                JSONObject jo = (JSONObject) obj;
 
-                try {
-                    Object obj = new JSONParser().parse(new FileReader(userFile));
-                    JSONObject jo = (JSONObject) obj;
-
-                    tempUsername = (String) jo.get("username");
-                    tempPassword = (String) jo.get("password");
-                    JSONArray ja = (JSONArray) jo.get("messages");
-                    for (Object message : ja) {
-                        tempMessages.add((String) message);
-                    }
-
-                    loadedJSON = true;
-
-                } catch (IOException | ParseException e) {
-                    Platform.runLater(() -> {
-                        Alert alert = new Alert(
-                                Alert.AlertType.ERROR,
-                                "Could not load " + userFile.getName() + ". Make sure you have correctly created your user file!"
-                        );
-                        alert.showAndWait();
-                        veil.setVisible(false);
-                    });
+                // Store data
+                tempUsername = (String) jo.get("username");
+                tempPassword = (String) jo.get("password");
+                JSONArray ja = (JSONArray) jo.get("messages");
+                for (Object message : ja) {
+                    tempMessages.add((String) message);
                 }
 
                 return null;
             }
 
             @Override
-            protected void succeeded() {
-                if (loadedJSON)
+            protected void failed()
+            {
+                Platform.runLater(() -> {
+                    Alert alert = new Alert(
+                            Alert.AlertType.ERROR,
+                            "Could not load " +
+                                    userFile.getName() +
+                                    ". Make sure you have correctly created your user file!"
+                    );
+                    alert.showAndWait();
+                    veil.setVisible(false);
+                });
+            }
+
+            @Override
+            protected void succeeded()
+            {
+                // Check for cookies
+                File cookieFile = new File(COOKIE_FILENAME);
+
+                // Check whether to login with cookie
+                if (cookieFile.exists() && useCookie)
                 {
-                    // Check for cookies
-                    File cookieFile = new File(COOKIE_FILENAME);
+                    // Task for loading cookies
+                    Task<Void> loadCookiesTask = new Task<Void>()
+                    {
+                        @Override
+                        protected Void call() throws Exception
+                        {
+                            // Read in cookie file
+                            ObjectInputStream in = new ObjectInputStream(new FileInputStream(cookieFile));
+                            @SuppressWarnings("unchecked")
+                            Set<Cookie> cookies = (Set<Cookie>) in.readObject();
+                            in.close();
 
-                    if (cookieFile.exists() && useCookie) {
-
-                        Task<Void> loadCookiesTask = new Task<Void>() {
-                            @Override
-                            protected Void call() throws Exception {
-                                ObjectInputStream in = new ObjectInputStream(new FileInputStream(cookieFile));
-                                @SuppressWarnings("unchecked")
-                                Set<Cookie> cookies = (Set<Cookie>) in.readObject();
-                                in.close();
-
-                                for (Cookie cookie : cookies) {
-                                    webClient.getCookieManager().addCookie(cookie);
-                                }
-
-                                Platform.runLater(() -> {
-                                    username = tempUsername;
-                                    messages = tempMessages;
-
-                                    userLabel.setText("Welcome " + username + "!");
-                                    startButton.setDisable(false);
-                                    veil.setVisible(false);
-                                });
-
-                                return null;
+                            // Add cookies
+                            for (Cookie cookie : cookies) {
+                                webClient.getCookieManager().addCookie(cookie);
                             }
 
-                            @Override
-                            protected void failed() {
-                                Platform.runLater(() -> createExceptionDialog(this.getException()));
-                            }
-                        };
-
-                        new Thread(loadCookiesTask).start();
-                    } else {
-
-                        class GetCaptchaTask extends Task<Void> {
-
-                            private HtmlPage captchaLoginPage;
-                            private HtmlForm form;
-
-                            @Override
-                            protected Void call() throws Exception {
-
-                                // Get the login page
-                                HtmlPage loginPage = webClient.getPage("https://www.furaffinity.net/login/");
-                                HtmlAnchor anchor = loginPage.getAnchorByHref("/login/?mode=imagecaptcha");
-                                captchaLoginPage = anchor.click();
-
-                                // Get the login form
-                                List<HtmlForm> formList = captchaLoginPage.getForms();
-                                form = formList.get(1);
-
-                                // Get the username and password fields
-                                HtmlTextInput usernameInput = form.getInputByName("name");
-                                HtmlPasswordInput passwordInput = form.getInputByName("pass");
-
-                                usernameInput.setText(tempUsername);
-                                passwordInput.setText(tempPassword);
-
-                                // Get captcha
-                                HtmlImage captcha = captchaLoginPage.getHtmlElementById("captcha_img");
-                                captcha.saveAs(new File("captcha.jpg"));
-                                return null;
-                            }
-
-                            @Override
-                            protected void succeeded() {
-                                // Create the custom dialog.
-                                Dialog<String> dialog = new Dialog<>();
-                                dialog.setTitle("Captcha Dialog");
-                                dialog.setHeaderText("Enter the captcha code.");
-
-                                // Set the icon (must be included in the project).
-                                dialog.setGraphic(new ImageView(new File("captcha.jpg").toURI().toString()));
-
-                                // Set the button types.
-                                ButtonType enterButtonType = new ButtonType("Enter", ButtonBar.ButtonData.OK_DONE);
-                                dialog.getDialogPane().getButtonTypes().addAll(enterButtonType, ButtonType.CANCEL);
-
-                                // Create the username and password labels and fields.
-                                GridPane grid = new GridPane();
-                                grid.setHgap(10);
-                                grid.setVgap(10);
-                                grid.setPadding(new Insets(20, 150, 10, 10));
-
-                                TextField captchaField = new TextField();
-                                captchaField.setPromptText("Captcha");
-
-                                grid.add(new Label("Captcha:"), 0, 0);
-                                grid.add(captchaField, 1, 0);
-
-                                // Enable/Disable login button depending on whether a username was entered.
-                                Node enterButton = dialog.getDialogPane().lookupButton(enterButtonType);
-                                enterButton.setDisable(true);
-
-                                // Do some validation (using the Java 8 lambda syntax).
-                                captchaField.textProperty().addListener((observable, oldValue, newValue) ->
-                                        enterButton.setDisable(newValue.trim().isEmpty()));
-
-                                dialog.getDialogPane().setContent(grid);
-
-                                // Convert the result to a username-password-pair when the login button is clicked.
-                                dialog.setResultConverter(dialogButton -> {
-                                    if (dialogButton == enterButtonType) {
-                                        return captchaField.getText();
-                                    }
-                                    return null;
-                                });
-
-                                Optional<String> result = dialog.showAndWait();
-
-                                if (result.isPresent()) {
-
-                                    Task<Void> loginTask = new Task<Void>() {
-                                        @Override
-                                        protected Void call() throws Exception {
-                                            String captchaMessage = result.get();
-                                            HtmlTextInput captchaInput = form.getInputByName("captcha");
-                                            captchaInput.setText(captchaMessage);
-
-                                            HtmlInput loginButton = form.getInputByName("login");
-                                            HtmlPage afterLoginPage = captchaLoginPage = loginButton.click();
-
-                                            if (!afterLoginPage.getUrl().toString().equals("http://www.furaffinity.net/")) {
-                                                print(afterLoginPage.getUrl().toString());
-                                                throw new Exception("Login failed! Try again.");
-                                            }
-
-
-                                            ObjectOutput out = new ObjectOutputStream(new FileOutputStream(COOKIE_FILENAME));
-                                            out.writeObject(webClient.getCookieManager().getCookies());
-                                            out.close();
-
-                                            Platform.runLater(() -> {
-                                                username = tempUsername;
-                                                messages = tempMessages;
-
-                                                userLabel.setText("Welcome " + username + "!");
-                                                startButton.setDisable(false);
-                                                veil.setVisible(false);
-                                            });
-
-                                            return null;
-                                        }
-
-                                        @Override
-                                        protected void failed() {
-                                            Platform.runLater(() -> createExceptionDialog(this.getException()));
-                                        }
-                                    };
-
-                                    new Thread(loginTask).start();
-                                } else {
-                                    Platform.runLater(() -> veil.setVisible(false));
-                                }
-                            }
-
-                            @Override
-                            protected void failed() {
-                                Platform.runLater(() -> createExceptionDialog(this.getException()));
-                            }
+                            welcomeUser();
+                            return null;
                         }
 
-                        GetCaptchaTask getCaptchaTask = new GetCaptchaTask();
-                        new Thread(getCaptchaTask).start();
-                    }
+                        @Override
+                        protected void failed() {
+                            Platform.runLater(() -> createExceptionDialog(this.getException()));
+                        }
+                    };
+
+                    // Run task
+                    new Thread(loadCookiesTask).start();
                 }
+                else {
+
+                    // Task for getting captcha
+                    class GetCaptchaTask extends Task<Void> {
+
+                        private HtmlPage captchaLoginPage;
+                        private HtmlForm form;
+
+                        @Override
+                        protected Void call() throws Exception
+                        {
+                            // Get the login page
+                            HtmlPage loginPage = webClient.getPage("https://www.furaffinity.net/login/");
+                            HtmlAnchor anchor = loginPage.getAnchorByHref("/login/?mode=imagecaptcha");
+                            captchaLoginPage = anchor.click();
+
+                            // Get the login form
+                            List<HtmlForm> formList = captchaLoginPage.getForms();
+                            form = formList.get(1);
+
+                            // Get the username and password fields
+                            HtmlTextInput usernameInput = form.getInputByName("name");
+                            HtmlPasswordInput passwordInput = form.getInputByName("pass");
+
+                            // Set fields
+                            usernameInput.setText(tempUsername);
+                            passwordInput.setText(tempPassword);
+
+                            // Get and save captcha
+                            HtmlImage captcha = captchaLoginPage.getHtmlElementById("captcha_img");
+                            captcha.saveAs(new File("captcha.jpg"));
+                            return null;
+                        }
+
+                        @Override
+                        protected void failed() {
+                            Platform.runLater(() -> createExceptionDialog(this.getException()));
+                        }
+
+                        @Override
+                        protected void succeeded()
+                        {
+                            // Create the custom dialog.
+                            Dialog<String> dialog = new Dialog<>();
+                            dialog.setTitle("Captcha Dialog");
+                            dialog.setHeaderText("Enter the captcha code.");
+
+                            // Set the captcha
+                            dialog.setGraphic(new ImageView(new File("captcha.jpg").toURI().toString()));
+
+                            // Set the button types.
+                            ButtonType enterButtonType = new ButtonType("Enter", ButtonBar.ButtonData.OK_DONE);
+                            dialog.getDialogPane().getButtonTypes().addAll(enterButtonType, ButtonType.CANCEL);
+
+                            // Create the captcha field
+                            GridPane grid = new GridPane();
+                            grid.setHgap(10);
+                            grid.setVgap(10);
+                            grid.setPadding(new Insets(20, 150, 10, 10));
+
+                            TextField captchaField = new TextField();
+                            captchaField.setPromptText("Captcha");
+
+                            grid.add(new Label("Captcha:"), 0, 0);
+                            grid.add(captchaField, 1, 0);
+
+                            // Enable/Disable enter button depending on whether a captcha was entered.
+                            Node enterButton = dialog.getDialogPane().lookupButton(enterButtonType);
+                            enterButton.setDisable(true);
+
+                            // Do some validation
+                            captchaField.textProperty().addListener((observable, oldValue, newValue) ->
+                                    enterButton.setDisable(newValue.trim().isEmpty()));
+
+                            dialog.getDialogPane().setContent(grid);
+
+                            // Convert the result
+                            dialog.setResultConverter(dialogButton -> {
+                                if (dialogButton == enterButtonType) {
+                                    return captchaField.getText();
+                                }
+                                return null;
+                            });
+
+                            // Show dialog and get result
+                            Optional<String> result = dialog.showAndWait();
+
+                            // Check if captcha was actually entered
+                            if (result.isPresent())
+                            {
+                                // Task for logging in
+                                Task<Void> loginTask = new Task<Void>()
+                                {
+                                    @Override
+                                    protected Void call() throws Exception
+                                    {
+                                        // Get captcha message and put into form
+                                        String captchaMessage = result.get();
+                                        HtmlTextInput captchaInput = form.getInputByName("captcha");
+                                        captchaInput.setText(captchaMessage);
+
+                                        // Hit login button
+                                        HtmlInput loginButton = form.getInputByName("login");
+                                        HtmlPage afterLoginPage = captchaLoginPage = loginButton.click();
+
+                                        // Validate login
+                                        if (!afterLoginPage.getUrl().toString().equals("http://www.furaffinity.net/")) {
+                                            print(afterLoginPage.getUrl().toString());
+                                            throw new Exception("Login failed! Try again.");
+                                        }
+
+                                        // Write cookies to file
+                                        ObjectOutput out = new ObjectOutputStream(new FileOutputStream(COOKIE_FILENAME));
+                                        out.writeObject(webClient.getCookieManager().getCookies());
+                                        out.close();
+
+                                        welcomeUser();
+                                        return null;
+                                    }
+
+                                    @Override
+                                    protected void failed() {
+                                        Platform.runLater(() -> createExceptionDialog(this.getException()));
+                                    }
+                                };
+
+                                // Run login task
+                                new Thread(loginTask).start();
+                            }
+                            else {
+                                Platform.runLater(() -> veil.setVisible(false));
+                            }
+                        }
+                    }
+
+                    // Run captcha task
+                    GetCaptchaTask getCaptchaTask = new GetCaptchaTask();
+                    new Thread(getCaptchaTask).start();
+                }
+            }
+
+            /**
+             * Helper method used to welcome a new user.
+             */
+            private void welcomeUser() {
+                Platform.runLater(() -> {
+                    username = tempUsername;
+                    messages = tempMessages;
+
+                    userLabel.setText("Welcome " + username + "!");
+                    startButton.setDisable(false);
+                    veil.setVisible(false);
+                });
             }
         }
 
+        // Run JSON task
         new Thread(new LoadJsonTask()).start();
     }
 
+    /**
+     * Helper method for printing to text area.
+     * @param text Text to print.
+     */
     private void print(String text) {
         Platform.runLater(() -> textArea.appendText(text + "\n"));
     }
 
-    private void setProgressLabel(String text) {
-        Platform.runLater(() -> progressLabel.setText(text));
-    }
-
-    private void createExceptionDialog(Throwable e) {
+    /**
+     * Creates and shows a dialog that displays an exception.
+     * @param e Exception.
+     */
+    private void createExceptionDialog(Throwable e)
+    {
         e.printStackTrace();
 
         Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -538,19 +564,24 @@ public class App extends Application implements EventHandler<ActionEvent> {
         veil.setVisible(false);
     }
 
-
-
-    private void handleStartButton() {
-
+    /**
+     *
+     */
+    private void handleStartButton()
+    {
+        // Update progress bar
         progressBar.setProgress(ProgressBar.INDETERMINATE_PROGRESS);
         progressLabel.setText("Starting");
 
+        // Update buttons
         startButton.setDisable(true);
         stopButton.setDisable(false);
         selectUserButton.setDisable(true);
 
+        // Update flag
         stopFlag = false;
 
+        // Task for thanking favs
         class FavingTask extends Task<Void>
         {
             private int favCount;
@@ -574,8 +605,7 @@ public class App extends Application implements EventHandler<ActionEvent> {
                 int numProcessed = 0;
 
                 // Update progress
-                updateProgress(numProcessed, favCount);
-                setProgressLabel(numProcessed + "/" + favCount);
+                setProgress(numProcessed, favCount);
 
                 // Loop until all favorites are processed
                 while (numProcessed < favCount)
@@ -656,8 +686,7 @@ public class App extends Application implements EventHandler<ActionEvent> {
                                 entryIt.remove();
 
                                 numProcessed += favs;
-                                updateProgress(numProcessed, favCount);
-                                setProgressLabel(numProcessed + "/" + favCount);
+                                setProgress(numProcessed, favCount);
                                 continue;
                             }
 
@@ -690,8 +719,7 @@ public class App extends Application implements EventHandler<ActionEvent> {
                                 entryIt.remove();
 
                                 numProcessed += favs;
-                                updateProgress(numProcessed, favCount);
-                                setProgressLabel(numProcessed + "/" + favCount);
+                                setProgress(numProcessed, favCount);
 
                                 if (numProcessed != favCount) {
                                     Thread.sleep(WAIT_SHOUT);
@@ -740,7 +768,24 @@ public class App extends Application implements EventHandler<ActionEvent> {
             }
 
             @Override
-            protected void succeeded() {
+            protected void failed()
+            {
+                Platform.runLater(() -> {
+                    createExceptionDialog(this.getException());
+
+                    startButton.setDisable(false);
+                    selectUserButton.setDisable(false);
+                    stopButton.setDisable(true);
+
+                    progressBar.progressProperty().unbind();
+                    progressBar.progressProperty().setValue(ProgressBar.INDETERMINATE_PROGRESS);
+                    progressLabel.setText("Stopped");
+                });
+            }
+
+            @Override
+            protected void succeeded()
+            {
                 updateProgress(favCount, favCount);
                 Platform.runLater(() -> {
                     progressBar.progressProperty().unbind();
@@ -756,40 +801,45 @@ public class App extends Application implements EventHandler<ActionEvent> {
                 });
             }
 
-            @Override
-            protected void failed() {
-                Platform.runLater(() -> {
-                    createExceptionDialog(this.getException());
-
-                    startButton.setDisable(false);
-                    selectUserButton.setDisable(false);
-                    stopButton.setDisable(true);
-
-                    progressBar.progressProperty().unbind();
-                    progressBar.progressProperty().setValue(ProgressBar.INDETERMINATE_PROGRESS);
-                    progressLabel.setText("Stopped");
-                });
+            /**
+             * Updates progress bar and label.
+             * @param current Current progress.
+             * @param max Max progress.
+             */
+            private void setProgress(double current, double max) {
+                updateProgress(current, max);
+                Platform.runLater(() -> progressLabel.setText(current + "/" + max));
             }
         }
 
+        // Run and bind faving task
         FavingTask favingTask = new FavingTask();
         progressBar.progressProperty().bind(favingTask.progressProperty());
         new Thread(favingTask).start();
     }
 
+    /**
+     * Handles the stop button.
+     */
     private void handleStopButton() {
         stopFlag = true;
     }
 
-    private void handleSelectUserButton() {
+    /**
+     * Handles the select user button.
+     */
+    private void handleSelectUserButton()
+    {
         veil.setVisible(true);
 
+        // Open file chooser
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Open User File");
         fileChooser.setInitialDirectory(new File("."));
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("JSON", "*.json"));
         File file = fileChooser.showOpenDialog(stage);
 
+        // Login using file
         if (file != null) {
             login(file, false);
         } else {
