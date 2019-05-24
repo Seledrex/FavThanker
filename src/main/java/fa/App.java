@@ -462,7 +462,8 @@ public class App extends Application implements EventHandler<ActionEvent> {
                                         HtmlPage afterLoginPage = captchaLoginPage = loginButton.click();
 
                                         // Validate login
-                                        if (!afterLoginPage.getUrl().toString().equals("http://www.furaffinity.net/")) {
+                                        if (!afterLoginPage.getUrl().toString().equals("http://www.furaffinity.net/") &&
+                                                !afterLoginPage.getUrl().toString().equals("https://www.furaffinity.net/")) {
                                             print(afterLoginPage.getUrl().toString());
                                             throw new Exception("Login failed! Try again.");
                                         }
