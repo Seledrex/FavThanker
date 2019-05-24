@@ -14,7 +14,7 @@ First users must create a JSON file which contains the user's username, password
 
 ## Instructions
 
-1. Download FavThanker.zip
+1. Download [FavThanker.zip](https://github.com/Seledrex/FavThanker/raw/master/FavThanker.zip)
 2. Extract and place the folder in desired location
 3. Edit the JSON file with a text editor
     - Fill in your FA username and password
