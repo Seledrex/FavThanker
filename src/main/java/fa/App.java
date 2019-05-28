@@ -693,7 +693,7 @@ public class App extends Application implements EventHandler<ActionEvent> {
                                 continue;
                             }
 
-                            HtmlForm form = formList.get(1);
+                            HtmlForm form = formList.get(formList.size() - 1);
 
                             // Get shout box and submit button
                             HtmlTextArea shoutBox = form.getTextAreaByName("shout");
