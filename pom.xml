@@ -29,7 +29,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>fa.App</mainClass>
+                            <mainClass>com.seledrex.gui.View</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>
