@@ -12,6 +12,9 @@ import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Task for logging into FA using username, password, and captcha.
+ */
 public class LoginTask extends Task<Void> {
 
     private Model model;
@@ -24,13 +27,23 @@ public class LoginTask extends Task<Void> {
     private HtmlPage captchaLoginPage;
     private String captchaMessage;
 
-    public LoginTask(final Model model,
-                     final View view,
-                     final String tempUsername,
-                     final String tempPassword,
-                     final ArrayList<String> tempMessages,
-                     final HtmlPage captchaLoginPage,
-                     final String captchaMessage) {
+    /**
+     * Creates the new login task thread.
+     * @param model Model.
+     * @param view View.
+     * @param tempUsername Username.
+     * @param tempPassword Password.
+     * @param tempMessages Messages.
+     * @param captchaLoginPage Captcha login page.
+     * @param captchaMessage Captcha message.
+     */
+    LoginTask(final Model model,
+              final View view,
+              final String tempUsername,
+              final String tempPassword,
+              final ArrayList<String> tempMessages,
+              final HtmlPage captchaLoginPage,
+              final String captchaMessage) {
         this.model = model;
         this.view = view;
         this.tempUsername = tempUsername;
@@ -40,6 +53,11 @@ public class LoginTask extends Task<Void> {
         this.captchaMessage = captchaMessage;
     }
 
+    /**
+     * Task callback.
+     * @return null.
+     * @throws Exception Exception.
+     */
     @Override
     protected Void call() throws Exception
     {
@@ -79,6 +97,9 @@ public class LoginTask extends Task<Void> {
         return null;
     }
 
+    /**
+     * Failure callback.
+     */
     @Override
     protected void failed() {
         view.setStateError(this.getException());

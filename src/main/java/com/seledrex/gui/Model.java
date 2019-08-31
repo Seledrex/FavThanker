@@ -8,20 +8,24 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.Properties;
 
+/**
+ * Model contains all the data associated with the application.
+ */
 public class Model {
 
     private Properties props;
-
     private WebClient webClient;
 
     private boolean foundConfig;
     private boolean stopFlag;
 
     private String username;
-
     private ArrayList<String> messages;
 
-    public Model() {
+    /**
+     * Creates a model by loading the web client and user config properties.
+     */
+    Model() {
         // Initialize variables
         messages = new ArrayList<>();
         foundConfig = false;
@@ -40,7 +44,7 @@ public class Model {
         webClient.setCookieManager(manager);
 
         // Read in config properties
-        try (InputStream input = new FileInputStream("config.properties")) {
+        try (InputStream input = new FileInputStream(Constants.CONFIG_FILENAME)) {
             props = new Properties();
             props.load(input);
             foundConfig = true;
@@ -49,12 +53,16 @@ public class Model {
         }
     }
 
-    public void persist() throws Exception {
+    /**
+     * Persists data from the application by saving to disk.
+     * @throws Exception Exception thrown on error.
+     */
+    void persist() throws Exception {
         // Save config
-        OutputStream output = new FileOutputStream("config.properties");
+        OutputStream output = new FileOutputStream(Constants.CONFIG_FILENAME);
         if (props == null)
             props = new Properties();
-        props.setProperty("username", username);
+        props.setProperty(Constants.USERNAME, username);
         props.store(output, null);
 
         // Save cookies
@@ -70,10 +78,6 @@ public class Model {
         return stopFlag;
     }
 
-    public void setStopFlag(boolean stopFlag) {
-        this.stopFlag = stopFlag;
-    }
-
     public WebClient getWebClient() {
         return webClient;
     }
@@ -82,23 +86,27 @@ public class Model {
         return username;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
     public ArrayList<String> getMessages() {
         return messages;
+    }
+
+    Properties getProps() {
+        return props;
+    }
+
+    boolean getFoundConfig() {
+        return foundConfig;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public void setMessages(ArrayList<String> messages) {
         this.messages = messages;
     }
 
-    public boolean isFoundConfig() {
-        return foundConfig;
-    }
-
-    public Properties getProps() {
-        return props;
+    void setStopFlag(boolean stopFlag) {
+        this.stopFlag = stopFlag;
     }
 }

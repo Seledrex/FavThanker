@@ -9,7 +9,9 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Optional;
 
-// Task for getting captcha
+/**
+ * Task for getting captcha from FA.
+ */
 public class GetCaptchaTask extends Task<Void> {
 
     private Model model;
@@ -20,13 +22,20 @@ public class GetCaptchaTask extends Task<Void> {
     private ArrayList<String> tempMessages;
 
     private HtmlPage captchaLoginPage;
-    private HtmlForm form;
 
-    public GetCaptchaTask(final Model model,
-                          final View view,
-                          final String tempUsername,
-                          final String tempPassword,
-                          final ArrayList<String> tempMessages) {
+    /**
+     * Creates get captcha task thread.
+     * @param model Model.
+     * @param view View.
+     * @param tempUsername Username.
+     * @param tempPassword Password.
+     * @param tempMessages Messages.
+     */
+    GetCaptchaTask(final Model model,
+                   final View view,
+                   final String tempUsername,
+                   final String tempPassword,
+                   final ArrayList<String> tempMessages) {
         this.model = model;
         this.view = view;
         this.tempUsername = tempUsername;
@@ -34,6 +43,11 @@ public class GetCaptchaTask extends Task<Void> {
         this.tempMessages = tempMessages;
     }
 
+    /**
+     * Task callback.
+     * @return null.
+     * @throws Exception Exception.
+     */
     @Override
     protected Void call() throws Exception
     {
@@ -48,11 +62,17 @@ public class GetCaptchaTask extends Task<Void> {
         return null;
     }
 
+    /**
+     * Failure callback.
+     */
     @Override
     protected void failed() {
         view.setStateError(this.getException());
     }
 
+    /**
+     * Success callback.
+     */
     @Override
     protected void succeeded()
     {

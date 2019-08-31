@@ -11,6 +11,9 @@ import java.io.ObjectInputStream;
 import java.util.ArrayList;
 import java.util.Set;
 
+/**
+ * Task for loading cookies.
+ */
 public class LoadCookiesTask extends Task<Void> {
 
     private Model model;
@@ -20,11 +23,19 @@ public class LoadCookiesTask extends Task<Void> {
     private String tempUsername;
     private ArrayList<String> tempMessages;
 
-    public LoadCookiesTask(final Model model,
-                           final View view,
-                           final File cookieFile,
-                           final String tempUsername,
-                           final ArrayList<String> tempMessages) {
+    /**
+     * Creates load cookies task thread.
+     * @param model Model.
+     * @param view View.
+     * @param cookieFile Cookie file.
+     * @param tempUsername Username.
+     * @param tempMessages Password.
+     */
+    LoadCookiesTask(final Model model,
+                    final View view,
+                    final File cookieFile,
+                    final String tempUsername,
+                    final ArrayList<String> tempMessages) {
         this.model = model;
         this.view = view;
         this.cookieFile = cookieFile;
@@ -32,6 +43,11 @@ public class LoadCookiesTask extends Task<Void> {
         this.tempMessages = tempMessages;
     }
 
+    /**
+     * Task callback.
+     * @return null.
+     * @throws Exception Exception.
+     */
     @Override
     protected Void call() throws Exception
     {
@@ -53,6 +69,9 @@ public class LoadCookiesTask extends Task<Void> {
         return null;
     }
 
+    /**
+     * Failure callback.
+     */
     @Override
     protected void failed() {
         view.setStateError(this.getException());

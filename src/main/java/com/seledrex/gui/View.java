@@ -1,5 +1,6 @@
 package com.seledrex.gui;
 
+import com.seledrex.util.Constants;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -18,6 +19,9 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.Optional;
 
+/**
+ * View contains all methods and properties for the GUI.
+ */
 public class View extends Application {
 
     private Model model;
@@ -37,37 +41,44 @@ public class View extends Application {
     private Region veil;
     private Stage stage;
 
+    /**
+     * Initializes the application with the model and controller.
+     */
     @Override
-    public void init() throws Exception {
+    public void init() {
         model = new Model();
         controller = new Controller(model, this);
     }
 
+    /**
+     * Sets up the GUI components and registers with the controller.
+     * @param primaryStage Stage.
+     */
     @Override
-    public void start(Stage primaryStage) throws Exception {
+    public void start(Stage primaryStage) {
         // Set up GUI components
-        userLabel = new Label("Please select a user!");
+        userLabel = new Label(Constants.SELECT_USER_PROMPT);
         userLabel.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
         userLabel.setAlignment(Pos.CENTER);
 
-        startButton = new Button("Start");
+        startButton = new Button(Constants.START);
         startButton.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
         startButton.setDisable(true);
         startButton.addEventHandler(ActionEvent.ANY, controller);
 
-        stopButton = new Button("Stop");
+        stopButton = new Button(Constants.STOP);
         stopButton.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
         stopButton.setDisable(true);
         stopButton.addEventHandler(ActionEvent.ANY, controller);
 
-        selectUserButton = new Button("Select User");
+        selectUserButton = new Button(Constants.SELECT_USER);
         selectUserButton.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
         selectUserButton.addEventHandler(ActionEvent.ANY, controller);
 
         progressBar = new ProgressBar();
         progressBar.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
 
-        progressLabel = new Label("Stopped");
+        progressLabel = new Label(Constants.STOPPED);
         progressLabel.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
         progressLabel.setAlignment(Pos.CENTER);
 
@@ -146,23 +157,24 @@ public class View extends Application {
 
         // Set up stage
         stage = primaryStage;
-        stage.setTitle("FA Favorite Thanker");
+        stage.setTitle(Constants.TITLE);
         stage.setScene(scene);
         stage.show();
 
         // Login if previously logged in
-        if (model.isFoundConfig() && model.getProps().getProperty("username") != null && !model.getProps().getProperty("username").equals("")) {
-            String jsonFilename = model.getProps().getProperty("username") + ".json";
+        if (model.getFoundConfig() &&
+                model.getProps().getProperty(Constants.USERNAME) != null &&
+                !model.getProps().getProperty(Constants.USERNAME).equals("")) {
+            String jsonFilename = model.getProps().getProperty(Constants.USERNAME) + ".json";
             controller.login(new File(jsonFilename), true);
         } else {
             veil.setVisible(false);
         }
     }
 
-    //==================================================================================================================
-    // Stop
-    //==================================================================================================================
-
+    /**
+     * Handles closing the application.
+     */
     @Override
     public void stop() {
         try {
@@ -172,22 +184,13 @@ public class View extends Application {
         }
     }
 
-    public Button getStartButton() {
-        return startButton;
-    }
-
-    public Button getStopButton() {
-        return stopButton;
-    }
-
-    public Button getSelectUserButton() {
-        return selectUserButton;
-    }
-
-    public void setStateInProgress() {
+    /**
+     * Sets GUI to the in progress state when the faving task is in process.
+     */
+    void setStateInProgress() {
         // Update progress bar
         progressBar.setProgress(ProgressBar.INDETERMINATE_PROGRESS);
-        progressLabel.setText("Starting");
+        progressLabel.setText(Constants.STARTING);
 
         // Update buttons
         startButton.setDisable(true);
@@ -195,6 +198,10 @@ public class View extends Application {
         selectUserButton.setDisable(true);
     }
 
+    /**
+     * Sets GUI to the progress error state when the faving task fails.
+     * @param e Exception.
+     */
     public void setStateProgressError(Throwable e) {
         Platform.runLater(() -> {
             createExceptionDialog(e);
@@ -205,10 +212,14 @@ public class View extends Application {
 
             progressBar.progressProperty().unbind();
             progressBar.progressProperty().setValue(ProgressBar.INDETERMINATE_PROGRESS);
-            progressLabel.setText("Stopped");
+            progressLabel.setText(Constants.STOPPED);
         });
     }
 
+    /**
+     * Sets GUI to the progress success state when the faving task succeeds.
+     * @param favCount Total favs.
+     */
     public void setStateProgressSuccess(final int favCount) {
         Platform.runLater(() -> {
             progressBar.progressProperty().unbind();
@@ -217,13 +228,17 @@ public class View extends Application {
             selectUserButton.setDisable(false);
 
             if (model.getStopFlag()) {
-                progressLabel.setText("Stopped");
+                progressLabel.setText(Constants.STOPPED);
             } else {
                 progressLabel.setText(favCount + "/" + favCount);
             }
         });
     }
 
+    /**
+     * Sets GUI to the load Json task error state when the load Json task fails.
+     * @param userFile File attempted to be loaded.
+     */
     public void setStateLoadJsonTaskError(final File userFile) {
         Platform.runLater(() -> {
             Alert alert = new Alert(
@@ -237,11 +252,19 @@ public class View extends Application {
         });
     }
 
+    /**
+     * Creates a general error message.
+     * @param e Exception.
+     */
     public void setStateError(Throwable e) {
         Platform.runLater(() -> createExceptionDialog(e));
     }
 
-    public File openFile() {
+    /**
+     * Opens a file using a file chooser.
+     * @return chosen file.
+     */
+    File openFile() {
         // Open file chooser
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Open User File");
@@ -250,14 +273,19 @@ public class View extends Application {
         return fileChooser.showOpenDialog(stage);
     }
 
+    /**
+     * Updates the progress label with current progress.
+     * @param current Current progress.
+     * @param max Max progress.
+     */
     public void updateProgress(final double current, final double max) {
         Platform.runLater(() -> progressLabel.setText((int) current + "/" + (int) max));
     }
 
-    public ProgressBar getProgressBar() {
-        return progressBar;
-    }
-
+    /**
+     * Toggles veil visibility.
+     * @param visible True for visible, false otherwise.
+     */
     public void setVeilVisible(boolean visible) {
         Platform.runLater(() -> veil.setVisible(visible));
     }
@@ -323,6 +351,10 @@ public class View extends Application {
         veil.setVisible(false);
     }
 
+    /**
+     * Shows the login dialog and returns the typed in captcha message.
+     * @return captcha message.
+     */
     public Optional<String> showLoginDialog() {
         // Create the custom dialog.
         Dialog<String> dialog = new Dialog<>();
@@ -369,4 +401,19 @@ public class View extends Application {
         return dialog.showAndWait();
     }
 
+    Button getStartButton() {
+        return startButton;
+    }
+
+    Button getStopButton() {
+        return stopButton;
+    }
+
+    Button getSelectUserButton() {
+        return selectUserButton;
+    }
+
+    public ProgressBar getProgressBar() {
+        return progressBar;
+    }
 }
