@@ -147,6 +147,7 @@ public class View extends Application {
 
         // Set up stage
         stage = primaryStage;
+        stage.setResizable(false);
         stage.setTitle(Constants.TITLE);
         stage.setScene(scene);
         stage.show();
