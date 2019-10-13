@@ -24,6 +24,19 @@ First users must create a JSON file which contains the user's username, password
 6. Select your JSON file with the application
 7. Press start to begin thanking
 
+## Todo
+
+Fav Thanker
+- Password encryption
+- Shouts for specific users and groups of users
+- Resize limit
+- Log files
+  - Option to enable/disable
+  - Automatically clear logs
+  - Show which artwork user faved
+- Larger title text
+- Make 'Start' button the default
+- Command line version
     
    
 
