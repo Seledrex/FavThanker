@@ -52,6 +52,7 @@ public class View extends Application implements ChangeListener<Boolean> {
         userLabel = new Label(Constants.SELECT_USER_PROMPT);
         userLabel.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
         userLabel.setAlignment(Pos.CENTER);
+        userLabel.setStyle("-fx-font-size: 12pt;");
 
         startButton = new Button(Constants.START);
         startButton.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
