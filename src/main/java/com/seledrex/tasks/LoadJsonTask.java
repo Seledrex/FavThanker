@@ -21,7 +21,6 @@ public class LoadJsonTask extends Task<Void> {
     private boolean useCookie;
 
     private String tempUsername;
-    private String tempPassword;
     private ArrayList<String> tempMessages = new ArrayList<>();
 
     public LoadJsonTask(final Model model, final View view, final File userFile, final boolean useCookie) {
@@ -40,7 +39,6 @@ public class LoadJsonTask extends Task<Void> {
 
         // Store data
         tempUsername = (String) jo.get("username");
-        tempPassword = (String) jo.get("password");
         JSONArray ja = (JSONArray) jo.get("messages");
         for (Object message : ja) {
             tempMessages.add((String) message);
@@ -66,7 +64,7 @@ public class LoadJsonTask extends Task<Void> {
             new Thread(new LoadCookiesTask(model, view, cookieFile, tempUsername, tempMessages)).start();
         }
         else {
-            new Thread(new GetCaptchaTask(model, view, tempUsername, tempPassword, tempMessages)).start();
+            new Thread(new GetCaptchaTask(model, view, tempUsername, tempMessages)).start();
         }
     }
 }

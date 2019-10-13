@@ -17,18 +17,15 @@ public class GetCaptchaTask extends Task<Void> {
     private String tempUsername;
     private String tempPassword;
     private ArrayList<String> tempMessages;
-
     private HtmlPage captchaLoginPage;
 
     GetCaptchaTask(final Model model,
                    final View view,
                    final String tempUsername,
-                   final String tempPassword,
                    final ArrayList<String> tempMessages) {
         this.model = model;
         this.view = view;
         this.tempUsername = tempUsername;
-        this.tempPassword = tempPassword;
         this.tempMessages = tempMessages;
     }
 
@@ -55,7 +52,7 @@ public class GetCaptchaTask extends Task<Void> {
     protected void succeeded()
     {
         // Show dialog and get result
-        Optional<String> result = view.showLoginDialog();
+        Optional<String[]> result = view.showLoginDialog();
 
         // Check if captcha was actually entered
         if (result.isPresent())
@@ -65,10 +62,10 @@ public class GetCaptchaTask extends Task<Void> {
                     model,
                     view,
                     tempUsername,
-                    tempPassword,
+                    result.get()[0],
                     tempMessages,
                     captchaLoginPage,
-                    result.get()
+                    result.get()[1]
             )).start();
         }
         else {

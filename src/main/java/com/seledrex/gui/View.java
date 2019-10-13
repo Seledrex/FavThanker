@@ -295,11 +295,11 @@ public class View extends Application {
         veil.setVisible(false);
     }
 
-    public Optional<String> showLoginDialog() {
+    public Optional<String[]> showLoginDialog() {
         // Create the custom dialog.
-        Dialog<String> dialog = new Dialog<>();
-        dialog.setTitle("Captcha Dialog");
-        dialog.setHeaderText("Enter the captcha code.");
+        Dialog<String[]> dialog = new Dialog<>();
+        dialog.setTitle("Login Dialog");
+        dialog.setHeaderText("Enter password and captcha.");
 
         // Set the captcha
         dialog.setGraphic(new ImageView(new File("captcha.jpg").toURI().toString()));
@@ -317,8 +317,13 @@ public class View extends Application {
         TextField captchaField = new TextField();
         captchaField.setPromptText("Captcha");
 
-        grid.add(new Label("Captcha:"), 0, 0);
-        grid.add(captchaField, 1, 0);
+        TextField passwordField = new PasswordField();
+        passwordField.setPromptText("Password");
+
+        grid.add(new Label("Password:"), 0, 0);
+        grid.add(passwordField, 1, 0);
+        grid.add(new Label("Captcha:"), 0, 1);
+        grid.add(captchaField, 1, 1);
 
         // Enable/Disable enter button depending on whether a captcha was entered.
         Node enterButton = dialog.getDialogPane().lookupButton(enterButtonType);
@@ -333,7 +338,10 @@ public class View extends Application {
         // Convert the result
         dialog.setResultConverter(dialogButton -> {
             if (dialogButton == enterButtonType) {
-                return captchaField.getText();
+                String[] result = new String[2];
+                result[0] = passwordField.getText();
+                result[1] = captchaField.getText();
+                return result;
             }
             return null;
         });
