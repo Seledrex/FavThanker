@@ -12,9 +12,6 @@ import java.io.File;
 import java.io.FileReader;
 import java.util.ArrayList;
 
-/**
- * Task for loading Json.
- */
 public class LoadJsonTask extends Task<Void> {
 
     private Model model;
@@ -27,13 +24,6 @@ public class LoadJsonTask extends Task<Void> {
     private String tempPassword;
     private ArrayList<String> tempMessages = new ArrayList<>();
 
-    /**
-     * Creates load json task thread.
-     * @param model Model.
-     * @param view View.
-     * @param userFile User file.
-     * @param useCookie Using cookie.
-     */
     public LoadJsonTask(final Model model, final View view, final File userFile, final boolean useCookie) {
         this.model = model;
         this.view = view;
@@ -41,11 +31,6 @@ public class LoadJsonTask extends Task<Void> {
         this.useCookie = useCookie;
     }
 
-    /**
-     * Task callback.
-     * @return null.
-     * @throws Exception Exception.
-     */
     @Override
     protected Void call() throws Exception
     {
@@ -64,18 +49,11 @@ public class LoadJsonTask extends Task<Void> {
         return null;
     }
 
-    /**
-     * Failure callback.
-     */
-    @Override
     protected void failed()
     {
         view.setStateLoadJsonTaskError(userFile);
     }
 
-    /**
-     * Success callback.
-     */
     @Override
     protected void succeeded()
     {

@@ -15,9 +15,6 @@ import java.util.concurrent.ThreadLocalRandom;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-/**
- * Task for thanking people for artwork on FA.
- */
 public class ThankingTask extends Task<Void> {
 
     private Model model;
@@ -25,22 +22,12 @@ public class ThankingTask extends Task<Void> {
 
     private int favCount;
 
-    /**
-     * Creates thanking task thread. Binds the view's progress bar.
-     * @param model Model.
-     * @param view View.
-     */
     public ThankingTask(final Model model, final View view) {
         this.model = model;
         this.view = view;
         view.getProgressBar().progressProperty().bind(this.progressProperty());
     }
 
-    /**
-     * Task callback.
-     * @return null.
-     * @throws Exception Exception.
-     */
     @Override
     protected Void call() throws Exception
     {
@@ -222,18 +209,12 @@ public class ThankingTask extends Task<Void> {
         return null;
     }
 
-    /**
-     * Failure callback.
-     */
     @Override
     protected void failed()
     {
         view.setStateProgressError(this.getException());
     }
 
-    /**
-     * Success callback.
-     */
     @Override
     protected void succeeded()
     {
@@ -241,11 +222,6 @@ public class ThankingTask extends Task<Void> {
         view.setStateProgressSuccess(favCount);
     }
 
-    /**
-     * Updates progress bar and label.
-     * @param current Current progress.
-     * @param max Max progress.
-     */
     private void setProgress(double current, double max) {
         updateProgress(current, max);
         view.updateProgress(current, max);

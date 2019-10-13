@@ -7,28 +7,16 @@ import javafx.event.EventHandler;
 
 import java.io.File;
 
-/**
- * Controller handles the callbacks for each of the GUI components.
- */
 public class Controller implements EventHandler<ActionEvent> {
 
     private final Model model;
     private final View view;
 
-    /**
-     * Creates a controller with model and view.
-     * @param model GUI model.
-     * @param view GUI view.
-     */
     Controller(final Model model, final View view) {
         this.model = model;
         this.view = view;
     }
 
-    /**
-     * Handles action events for components registered to the controller.
-     * @param event Action event.
-     */
     @Override
     public void handle(ActionEvent event) {
         if (event.getSource() == view.getStartButton()) {
@@ -43,9 +31,6 @@ public class Controller implements EventHandler<ActionEvent> {
         event.consume();
     }
 
-    /**
-     * Handles the callback for the start button. This will start the FavingTask.
-     */
     private void handleStartButton()
     {
         view.setStateInProgress();
@@ -54,16 +39,10 @@ public class Controller implements EventHandler<ActionEvent> {
         new Thread(new ThankingTask(model, view)).start();
     }
 
-    /**
-     * Handles the stop button.
-     */
     private void handleStopButton() {
         model.setStopFlag(true);
     }
 
-    /**
-     * Handles the select user button.
-     */
     private void handleSelectUserButton()
     {
         view.setVeilVisible(true);
@@ -77,11 +56,6 @@ public class Controller implements EventHandler<ActionEvent> {
         }
     }
 
-    /**
-     * Logs into FA.
-     * @param userFile user profile JSON.
-     * @param useCookie log in using a cookie.
-     */
     void login(File userFile, boolean useCookie)
     {
         new Thread(new LoadJsonTask(model, view, userFile, useCookie)).start();

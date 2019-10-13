@@ -9,9 +9,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Optional;
 
-/**
- * Task for getting captcha from FA.
- */
 public class GetCaptchaTask extends Task<Void> {
 
     private Model model;
@@ -23,14 +20,6 @@ public class GetCaptchaTask extends Task<Void> {
 
     private HtmlPage captchaLoginPage;
 
-    /**
-     * Creates get captcha task thread.
-     * @param model Model.
-     * @param view View.
-     * @param tempUsername Username.
-     * @param tempPassword Password.
-     * @param tempMessages Messages.
-     */
     GetCaptchaTask(final Model model,
                    final View view,
                    final String tempUsername,
@@ -43,11 +32,6 @@ public class GetCaptchaTask extends Task<Void> {
         this.tempMessages = tempMessages;
     }
 
-    /**
-     * Task callback.
-     * @return null.
-     * @throws Exception Exception.
-     */
     @Override
     protected Void call() throws Exception
     {
@@ -62,17 +46,11 @@ public class GetCaptchaTask extends Task<Void> {
         return null;
     }
 
-    /**
-     * Failure callback.
-     */
     @Override
     protected void failed() {
         view.setStateError(this.getException());
     }
 
-    /**
-     * Success callback.
-     */
     @Override
     protected void succeeded()
     {

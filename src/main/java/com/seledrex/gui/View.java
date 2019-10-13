@@ -19,9 +19,6 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.Optional;
 
-/**
- * View contains all methods and properties for the GUI.
- */
 public class View extends Application {
 
     private Model model;
@@ -41,19 +38,12 @@ public class View extends Application {
     private Region veil;
     private Stage stage;
 
-    /**
-     * Initializes the application with the model and controller.
-     */
     @Override
     public void init() {
         model = new Model();
         controller = new Controller(model, this);
     }
 
-    /**
-     * Sets up the GUI components and registers with the controller.
-     * @param primaryStage Stage.
-     */
     @Override
     public void start(Stage primaryStage) {
         // Set up GUI components
@@ -172,9 +162,6 @@ public class View extends Application {
         }
     }
 
-    /**
-     * Handles closing the application.
-     */
     @Override
     public void stop() {
         try {
@@ -184,9 +171,6 @@ public class View extends Application {
         }
     }
 
-    /**
-     * Sets GUI to the in progress state when the faving task is in process.
-     */
     void setStateInProgress() {
         // Update progress bar
         progressBar.setProgress(ProgressBar.INDETERMINATE_PROGRESS);
@@ -198,10 +182,6 @@ public class View extends Application {
         selectUserButton.setDisable(true);
     }
 
-    /**
-     * Sets GUI to the progress error state when the faving task fails.
-     * @param e Exception.
-     */
     public void setStateProgressError(Throwable e) {
         Platform.runLater(() -> {
             createExceptionDialog(e);
@@ -216,10 +196,6 @@ public class View extends Application {
         });
     }
 
-    /**
-     * Sets GUI to the progress success state when the faving task succeeds.
-     * @param favCount Total favs.
-     */
     public void setStateProgressSuccess(final int favCount) {
         Platform.runLater(() -> {
             progressBar.progressProperty().unbind();
@@ -235,10 +211,6 @@ public class View extends Application {
         });
     }
 
-    /**
-     * Sets GUI to the load Json task error state when the load Json task fails.
-     * @param userFile File attempted to be loaded.
-     */
     public void setStateLoadJsonTaskError(final File userFile) {
         Platform.runLater(() -> {
             Alert alert = new Alert(
@@ -252,18 +224,10 @@ public class View extends Application {
         });
     }
 
-    /**
-     * Creates a general error message.
-     * @param e Exception.
-     */
     public void setStateError(Throwable e) {
         Platform.runLater(() -> createExceptionDialog(e));
     }
 
-    /**
-     * Opens a file using a file chooser.
-     * @return chosen file.
-     */
     File openFile() {
         // Open file chooser
         FileChooser fileChooser = new FileChooser();
@@ -273,26 +237,14 @@ public class View extends Application {
         return fileChooser.showOpenDialog(stage);
     }
 
-    /**
-     * Updates the progress label with current progress.
-     * @param current Current progress.
-     * @param max Max progress.
-     */
     public void updateProgress(final double current, final double max) {
         Platform.runLater(() -> progressLabel.setText((int) current + "/" + (int) max));
     }
 
-    /**
-     * Toggles veil visibility.
-     * @param visible True for visible, false otherwise.
-     */
     public void setVeilVisible(boolean visible) {
         Platform.runLater(() -> veil.setVisible(visible));
     }
 
-    /**
-     * Helper method used to welcome a new user.
-     */
     public void welcomeUser() {
         Platform.runLater(() -> {
             userLabel.setText("Welcome " + model.getUsername() + "!");
@@ -301,18 +253,10 @@ public class View extends Application {
         });
     }
 
-    /**
-     * Helper method for printing to text area.
-     * @param text Text to print.
-     */
     public void print(String text) {
         Platform.runLater(() -> textArea.appendText(text + "\n"));
     }
 
-    /**
-     * Creates and shows a dialog that displays an exception.
-     * @param e Exception.
-     */
     private void createExceptionDialog(Throwable e)
     {
         e.printStackTrace();
@@ -351,10 +295,6 @@ public class View extends Application {
         veil.setVisible(false);
     }
 
-    /**
-     * Shows the login dialog and returns the typed in captcha message.
-     * @return captcha message.
-     */
     public Optional<String> showLoginDialog() {
         // Create the custom dialog.
         Dialog<String> dialog = new Dialog<>();

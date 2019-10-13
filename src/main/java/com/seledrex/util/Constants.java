@@ -1,8 +1,5 @@
 package com.seledrex.util;
 
-/**
- * Application constants.
- */
 public class Constants {
 
     public static final int WAIT_SHOUT = 20000;

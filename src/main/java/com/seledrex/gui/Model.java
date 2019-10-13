@@ -8,9 +8,6 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.Properties;
 
-/**
- * Model contains all the data associated with the application.
- */
 public class Model {
 
     private Properties props;
@@ -22,9 +19,6 @@ public class Model {
     private String username;
     private ArrayList<String> messages;
 
-    /**
-     * Creates a model by loading the web client and user config properties.
-     */
     Model() {
         // Initialize variables
         messages = new ArrayList<>();
@@ -53,10 +47,6 @@ public class Model {
         }
     }
 
-    /**
-     * Persists data from the application by saving to disk.
-     * @throws Exception Exception thrown on error.
-     */
     void persist() throws Exception {
         // Save config
         OutputStream output = new FileOutputStream(Constants.CONFIG_FILENAME);
