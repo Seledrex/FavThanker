@@ -3,6 +3,8 @@ package com.seledrex.gui;
 import com.seledrex.util.Constants;
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -19,7 +21,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.Optional;
 
-public class View extends Application {
+public class View extends Application implements ChangeListener<Boolean> {
 
     private Model model;
     private Controller controller;
@@ -54,15 +56,18 @@ public class View extends Application {
         startButton = new Button(Constants.START);
         startButton.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
         startButton.setDisable(true);
+        startButton.focusedProperty().addListener(this);
         startButton.addEventHandler(ActionEvent.ANY, controller);
 
         stopButton = new Button(Constants.STOP);
         stopButton.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
         stopButton.setDisable(true);
+        stopButton.focusedProperty().addListener(this);
         stopButton.addEventHandler(ActionEvent.ANY, controller);
 
         selectUserButton = new Button(Constants.SELECT_USER);
         selectUserButton.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
+        selectUserButton.focusedProperty().addListener(this);
         selectUserButton.addEventHandler(ActionEvent.ANY, controller);
 
         progressBar = new ProgressBar();
@@ -75,6 +80,7 @@ public class View extends Application {
         textArea = new TextArea();
         textArea.textProperty().addListener((observable, oldValue, newValue) -> textArea.setScrollTop(Double.MAX_VALUE));
         textArea.setEditable(false);
+        textArea.focusedProperty().addListener(this);
 
         // Create grid layout
         GridPane grid = new GridPane();
@@ -364,5 +370,10 @@ public class View extends Application {
 
     public ProgressBar getProgressBar() {
         return progressBar;
+    }
+
+    @Override
+    public void changed(ObservableValue<? extends Boolean> observableValue, Boolean aBoolean, Boolean t1) {
+        Platform.runLater(() -> userLabel.requestFocus());
     }
 }
