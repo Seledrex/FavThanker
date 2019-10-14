@@ -27,15 +27,11 @@ First users must create a JSON file which contains the user's username, password
 ## Todo
 
 Fav Thanker
-- Password encryption
 - Shouts for specific users and groups of users
-- Resize limit
 - Log files
   - Option to enable/disable
   - Automatically clear logs
   - Show which artwork user faved
-- Larger title text
-- Make 'Start' button the default
 - Command line version
     
    
