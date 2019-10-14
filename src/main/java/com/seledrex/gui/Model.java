@@ -3,6 +3,7 @@ package com.seledrex.gui;
 import com.gargoylesoftware.htmlunit.CookieManager;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.seledrex.util.Constants;
+import com.seledrex.util.Group;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -18,10 +19,12 @@ public class Model {
 
     private String username;
     private ArrayList<String> messages;
+    private ArrayList<Group> groups;
 
     Model() {
         // Initialize variables
         messages = new ArrayList<>();
+        groups = new ArrayList<>();
         foundConfig = false;
         stopFlag = false;
         username = "";
@@ -80,6 +83,10 @@ public class Model {
         return messages;
     }
 
+    public ArrayList<Group> getGroups() {
+        return groups;
+    }
+
     Properties getProps() {
         return props;
     }
@@ -94,6 +101,10 @@ public class Model {
 
     public void setMessages(ArrayList<String> messages) {
         this.messages = messages;
+    }
+
+    public void setGroups(ArrayList<Group> groups) {
+        this.groups = groups;
     }
 
     void setStopFlag(boolean stopFlag) {

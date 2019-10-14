@@ -5,6 +5,7 @@ import com.gargoylesoftware.htmlunit.html.*;
 import com.seledrex.gui.Model;
 import com.seledrex.gui.View;
 import com.seledrex.util.Constants;
+import com.seledrex.util.Group;
 import javafx.concurrent.Task;
 
 import java.util.HashMap;
@@ -94,15 +95,15 @@ public class ThankingTask extends Task<Void> {
 
                     // Get the entry and save the user and fav count
                     Map.Entry<String, Integer> entry = entryIt.next();
-                    String otherUser = entry.getKey();
+                    final String shoutee = entry.getKey();
                     int favs = entry.getValue();
-                    view.print("Processing " + otherUser);
-
-                    // Remove underscores
-                    otherUser = otherUser.replace("_", "");
+                    view.print("Processing " + shoutee);
 
                     // Load other user's page
-                    HtmlPage otherUserPage = model.getWebClient().getPage("http://www.furaffinity.net/user/" + otherUser + "/");
+                    HtmlPage otherUserPage = model.getWebClient().getPage(
+                            String.format("http://www.furaffinity.net/user/%s/",
+                                    shoutee.replace("_", "")));
+
                     String src = otherUserPage.getWebResponse().getContentAsString();
 
                     // Get the form
@@ -112,7 +113,7 @@ public class ThankingTask extends Task<Void> {
                     matcher = commentPattern.matcher(src);
                     boolean foundUser = false;
                     while (matcher.find()) {
-                        if (matcher.group(6).equals(model.getUsername().toLowerCase()) || matcher.group(6).equals(otherUser.toLowerCase())) {
+                        if (matcher.group(6).equals(model.getUsername().toLowerCase()) || matcher.group(6).equals(shoutee.toLowerCase())) {
                             foundUser = true;
                             break;
                         }
@@ -124,7 +125,7 @@ public class ThankingTask extends Task<Void> {
 
                     // If not valid, remove the other user
                     if (foundUser) {
-                        view.print("Skipping " + otherUser);
+                        view.print("Skipping " + shoutee);
                         entryIt.remove();
 
                         numProcessed += favs;
@@ -138,9 +139,19 @@ public class ThankingTask extends Task<Void> {
                     HtmlTextArea shoutBox = form.getTextAreaByName("shout");
                     HtmlButton submitButton = form.getButtonByName("submit");
 
-                    // Take a random message and set inside the shout box
-                    int rand = ThreadLocalRandom.current().nextInt(0, model.getMessages().size());
-                    shoutBox.setText(model.getMessages().get(rand));
+                    // Take a random message
+                    String message = model.getGroups()
+                            .stream()
+                            .filter(group -> group.containsUser(shoutee))
+                            .findFirst()
+                            .map(Group::getRandomMessage)
+                            .orElseGet(() -> {
+                                int rand = ThreadLocalRandom.current().nextInt(0, model.getMessages().size());
+                                return model.getMessages().get(rand);
+                            });
+
+                    // Set inside the shout box and submit
+                    shoutBox.setText(message);
                     otherUserPage = submitButton.click();
 
                     // Check the source of response
@@ -157,7 +168,7 @@ public class ThankingTask extends Task<Void> {
 
                     // If shout is successfully verified, then remove!
                     if (foundUser) {
-                        view.print("Shouted at " + otherUser);
+                        view.print("Shouted at " + shoutee);
                         entryIt.remove();
 
                         numProcessed += favs;
@@ -167,9 +178,8 @@ public class ThankingTask extends Task<Void> {
                             Thread.sleep(Constants.WAIT_SHOUT);
                         }
                     } else {
-
                         // See why shout failed
-                        view.print("Shout failed for " + otherUser);
+                        view.print("Shout failed for " + shoutee);
                         matcher = limitPattern.matcher(src);
 
                         // Perform cool down if too many shouts were made

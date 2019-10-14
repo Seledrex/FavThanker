@@ -3,6 +3,7 @@ package com.seledrex.tasks;
 import com.gargoylesoftware.htmlunit.util.Cookie;
 import com.seledrex.gui.Model;
 import com.seledrex.gui.View;
+import com.seledrex.util.Group;
 import javafx.concurrent.Task;
 
 import java.io.File;
@@ -19,17 +20,20 @@ public class LoadCookiesTask extends Task<Void> {
     private File cookieFile;
     private String tempUsername;
     private ArrayList<String> tempMessages;
+    private ArrayList<Group> tempGroups;
 
     LoadCookiesTask(final Model model,
                     final View view,
                     final File cookieFile,
                     final String tempUsername,
-                    final ArrayList<String> tempMessages) {
+                    final ArrayList<String> tempMessages,
+                    final ArrayList<Group> tempGroups) {
         this.model = model;
         this.view = view;
         this.cookieFile = cookieFile;
         this.tempUsername = tempUsername;
         this.tempMessages = tempMessages;
+        this.tempGroups = tempGroups;
     }
 
     @Override
@@ -48,6 +52,7 @@ public class LoadCookiesTask extends Task<Void> {
 
         model.setUsername(tempUsername);
         model.setMessages(tempMessages);
+        model.setGroups(tempGroups);
         view.welcomeUser();
 
         return null;

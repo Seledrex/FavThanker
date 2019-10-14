@@ -3,6 +3,7 @@ package com.seledrex.tasks;
 import com.seledrex.gui.Model;
 import com.seledrex.gui.View;
 import com.seledrex.util.Constants;
+import com.seledrex.util.Group;
 import javafx.concurrent.Task;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -22,6 +23,7 @@ public class LoadJsonTask extends Task<Void> {
 
     private String tempUsername;
     private ArrayList<String> tempMessages = new ArrayList<>();
+    private ArrayList<Group> tempGroups = new ArrayList<>();
 
     public LoadJsonTask(final Model model, final View view, final File userFile, final boolean useCookie) {
         this.model = model;
@@ -44,6 +46,25 @@ public class LoadJsonTask extends Task<Void> {
             tempMessages.add((String) message);
         }
 
+        // Store group info
+        JSONObject groups = (JSONObject) jo.get("groups");
+        groups.forEach((Object groupName, Object group) -> {
+            ArrayList<String> users = new ArrayList<>();
+            ArrayList<String> messages = new ArrayList<>();
+
+            JSONObject jGroup = (JSONObject) group;
+            JSONArray jUsers = (JSONArray) jGroup.get("users");
+            JSONArray jMessages = (JSONArray) jGroup.get("messages");
+
+            for (Object user : jUsers)
+                users.add((String) user);
+
+            for (Object message : jMessages)
+                messages.add((String) message);
+
+            tempGroups.add(new Group((String) groupName, users, messages));
+        });
+
         return null;
     }
 
@@ -61,10 +82,10 @@ public class LoadJsonTask extends Task<Void> {
         // Check whether to login with cookie
         if (cookieFile.exists() && useCookie)
         {
-            new Thread(new LoadCookiesTask(model, view, cookieFile, tempUsername, tempMessages)).start();
+            new Thread(new LoadCookiesTask(model, view, cookieFile, tempUsername, tempMessages, tempGroups)).start();
         }
         else {
-            new Thread(new GetCaptchaTask(model, view, tempUsername, tempMessages)).start();
+            new Thread(new GetCaptchaTask(model, view, tempUsername, tempMessages, tempGroups)).start();
         }
     }
 }

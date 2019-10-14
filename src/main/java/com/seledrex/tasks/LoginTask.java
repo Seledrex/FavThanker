@@ -4,6 +4,7 @@ import com.gargoylesoftware.htmlunit.html.*;
 import com.seledrex.gui.Model;
 import com.seledrex.gui.View;
 import com.seledrex.util.Constants;
+import com.seledrex.util.Group;
 import javafx.concurrent.Task;
 
 import java.io.FileOutputStream;
@@ -20,6 +21,7 @@ public class LoginTask extends Task<Void> {
     private String tempUsername;
     private String tempPassword;
     private ArrayList<String> tempMessages;
+    private ArrayList<Group> tempGroups;
 
     private HtmlPage captchaLoginPage;
     private String captchaMessage;
@@ -29,6 +31,7 @@ public class LoginTask extends Task<Void> {
               final String tempUsername,
               final String tempPassword,
               final ArrayList<String> tempMessages,
+              final ArrayList<Group> tempGroups,
               final HtmlPage captchaLoginPage,
               final String captchaMessage) {
         this.model = model;
@@ -36,6 +39,7 @@ public class LoginTask extends Task<Void> {
         this.tempUsername = tempUsername;
         this.tempPassword = tempPassword;
         this.tempMessages = tempMessages;
+        this.tempGroups = tempGroups;
         this.captchaLoginPage = captchaLoginPage;
         this.captchaMessage = captchaMessage;
     }
@@ -75,6 +79,7 @@ public class LoginTask extends Task<Void> {
 
         model.setUsername(tempUsername);
         model.setMessages(tempMessages);
+        model.setGroups(tempGroups);
         view.welcomeUser();
         return null;
     }

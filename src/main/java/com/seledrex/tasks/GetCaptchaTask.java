@@ -3,6 +3,7 @@ package com.seledrex.tasks;
 import com.gargoylesoftware.htmlunit.html.*;
 import com.seledrex.gui.Model;
 import com.seledrex.gui.View;
+import com.seledrex.util.Group;
 import javafx.concurrent.Task;
 
 import java.io.File;
@@ -15,18 +16,20 @@ public class GetCaptchaTask extends Task<Void> {
     private View view;
 
     private String tempUsername;
-    private String tempPassword;
     private ArrayList<String> tempMessages;
+    private ArrayList<Group> tempGroups;
     private HtmlPage captchaLoginPage;
 
     GetCaptchaTask(final Model model,
                    final View view,
                    final String tempUsername,
-                   final ArrayList<String> tempMessages) {
+                   final ArrayList<String> tempMessages,
+                   final ArrayList<Group> tempGroups) {
         this.model = model;
         this.view = view;
         this.tempUsername = tempUsername;
         this.tempMessages = tempMessages;
+        this.tempGroups = tempGroups;
     }
 
     @Override
@@ -64,6 +67,7 @@ public class GetCaptchaTask extends Task<Void> {
                     tempUsername,
                     result.get()[0],
                     tempMessages,
+                    tempGroups,
                     captchaLoginPage,
                     result.get()[1]
             )).start();
