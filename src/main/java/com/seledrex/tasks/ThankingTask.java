@@ -100,9 +100,9 @@ public class ThankingTask extends Task<Void> {
                     view.print("Processing " + shoutee);
 
                     // Load other user's page
-                    HtmlPage otherUserPage = model.getWebClient().getPage(
-                            String.format("http://www.furaffinity.net/user/%s/",
-                                    shoutee.replace("_", "")));
+                    String shouteeLink = String.format("http://www.furaffinity.net/user/%s/",
+                            shoutee.replace("_", ""));
+                    HtmlPage otherUserPage = model.getWebClient().getPage(shouteeLink);
 
                     String src = otherUserPage.getWebResponse().getContentAsString();
 
@@ -140,8 +140,7 @@ public class ThankingTask extends Task<Void> {
                     HtmlButton submitButton = form.getButtonByName("submit");
 
                     // Take a random message
-                    String message = model.getGroups()
-                            .stream()
+                    String message = model.getGroups().stream()
                             .filter(group -> group.containsUser(shoutee))
                             .findFirst()
                             .map(Group::getRandomMessage)
@@ -168,7 +167,14 @@ public class ThankingTask extends Task<Void> {
 
                     // If shout is successfully verified, then remove!
                     if (foundUser) {
+                        String groupName = model.getGroups().stream()
+                                .filter(group -> group.containsUser(shoutee))
+                                .findFirst()
+                                .map(Group::getName)
+                                .orElse("None");
+
                         view.print("Shouted at " + shoutee);
+                        model.getShoutWriter().printShout(shoutee, groupName, message, shouteeLink);
                         entryIt.remove();
 
                         numProcessed += favs;

@@ -25,13 +25,6 @@ First users must create a JSON file which contains the user's username, password
 7. Press start to begin thanking
 
 ## Todo
-
-Fav Thanker
-- Shouts for specific users and groups of users
-- Log files
-  - Option to enable/disable
-  - Automatically clear logs
-  - Show which artwork user faved
 - Command line version
     
    

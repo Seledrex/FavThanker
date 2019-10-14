@@ -2,10 +2,12 @@ package com.seledrex.util;
 
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
+import org.apache.commons.lang3.time.DateFormatUtils;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Date;
 
 public class ShoutWriter {
 
@@ -33,11 +35,11 @@ public class ShoutWriter {
         }
     }
 
-    public void printShout(String timestamp,
-                           String user,
+    public void printShout(String user,
                            String group,
                            String message,
                            String link) throws IOException {
+        String timestamp = DateFormatUtils.ISO_8601_EXTENDED_DATETIME_FORMAT.format(new Date());
         printer.printRecord(timestamp, user, group, message, link);
     }
 

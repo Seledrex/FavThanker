@@ -4,6 +4,7 @@ import com.gargoylesoftware.htmlunit.CookieManager;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.seledrex.util.Constants;
 import com.seledrex.util.Group;
+import com.seledrex.util.ShoutWriter;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -13,6 +14,7 @@ public class Model {
 
     private Properties props;
     private WebClient webClient;
+    private ShoutWriter shoutWriter;
 
     private boolean foundConfig;
     private boolean stopFlag;
@@ -48,6 +50,13 @@ public class Model {
         } catch (IOException ex) {
             props = new Properties();
         }
+
+        try {
+            shoutWriter = new ShoutWriter();
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.exit(1);
+        }
     }
 
     void persist() throws Exception {
@@ -63,8 +72,9 @@ public class Model {
         out.writeObject(webClient.getCookieManager().getCookies());
         out.close();
 
-        // Close web client
+        // Close stuff
         webClient.close();
+        shoutWriter.close();
     }
 
     public boolean getStopFlag() {
@@ -73,6 +83,10 @@ public class Model {
 
     public WebClient getWebClient() {
         return webClient;
+    }
+
+    public ShoutWriter getShoutWriter() {
+        return shoutWriter;
     }
 
     public String getUsername() {
