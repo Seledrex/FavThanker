@@ -7,6 +7,7 @@ public class Constants {
 
     public static final String COOKIE_FILENAME = "cookie.file";
     public static final String CONFIG_FILENAME = "config.properties";
+    public static final String SHOUTS_CSV_FILENAME = "shouts.csv";
 
     public static final String USERNAME = "username";
 
