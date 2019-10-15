@@ -23,7 +23,6 @@ public class ShoutWriter {
             printer = new CSVPrinter(
                     new FileWriter(Constants.SHOUTS_CSV_FILENAME, true),
                     CSVFormat.DEFAULT);
-
         } else {
             printer = new CSVPrinter(new FileWriter(Constants.SHOUTS_CSV_FILENAME), CSVFormat.DEFAULT);
             printer.printRecord(

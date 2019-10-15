@@ -5,13 +5,11 @@ import com.gargoylesoftware.htmlunit.html.*;
 import com.seledrex.gui.Model;
 import com.seledrex.gui.View;
 import com.seledrex.util.Constants;
+import com.seledrex.util.Favorite;
 import com.seledrex.util.Group;
 import javafx.concurrent.Task;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -33,7 +31,7 @@ public class ThankingTask extends Task<Void> {
     protected Void call() throws Exception
     {
         // Get favorites page and source
-        HtmlPage userPageLink = model.getWebClient().getPage("http://www.furaffinity.net/msg/others/#favorites");
+        HtmlPage userPageLink = model.getWebClient().getPage(Constants.FA_BASE_URL + "msg/others/#favorites");
         String userPageSrc = userPageLink.getWebResponse().getContentAsString();
 
         // Retrieve fav count
@@ -54,35 +52,41 @@ public class ThankingTask extends Task<Void> {
         while (numProcessed < favCount)
         {
             // Find favorites on user page
-            Pattern favPattern = Pattern.compile("(name=\"favorites\\[]\" value=\")(\\d{9})(\"><a href=\")([^\"]*)(\"><strong>)([^<]*)(</strong>)");
+            Pattern favPattern = Pattern.compile(Constants.FAV_PATTERN);
             Matcher matcher = favPattern.matcher(userPageSrc);
 
             // Create map top hold favorite information
-            HashMap<String, Integer> userMap = new HashMap<>();
+            HashMap<String, Integer> shouteeMap = new HashMap<>();
+            ArrayList<Favorite> favoriteList = new ArrayList<>();
 
             // Keep track of the number of favorites a user gave
             while (matcher.find()) {
-                String otherUser = matcher.group(6);
-                if (!userMap.containsKey(otherUser))
-                    userMap.put(otherUser, 1);
+                String shoutee = matcher.group(6);
+                String shouteeLink = Constants.FA_BASE_URL + matcher.group(4);
+                String art = matcher.group(11);
+                String artLink = Constants.FA_BASE_URL + matcher.group(9);
+
+                favoriteList.add(new Favorite(shoutee, shouteeLink, art, artLink));
+
+                if (!shouteeMap.containsKey(shoutee))
+                    shouteeMap.put(shoutee, 1);
                 else
-                    userMap.put(otherUser, userMap.get(otherUser) + 1);
+                    shouteeMap.put(shoutee, shouteeMap.get(shoutee) + 1);
             }
 
             // Done if no more favorites are found
-            if (userMap.isEmpty())
+            if (shouteeMap.isEmpty())
                 break;
 
             // Patterns for comments and shout limit
-            Pattern commentPattern = Pattern.compile("(<a href=\")([^\"]*)(\"><img class=\"comment_useravatar\" src=\")([^\"]*)(\" alt=\")([^\"]*)(\" />)");
-            Pattern limitPattern = Pattern.compile("You have posted 15 comments or shouts in the last 5 minutes. Please try again later.");
+            Pattern commentPattern = Pattern.compile(Constants.COMMENT_PATTERN);
+            Pattern limitPattern = Pattern.compile(Constants.LIMIT_PATTERN);
 
             // Loop while there are still users in the map
-            while (userMap.size() != 0)
+            while (shouteeMap.size() != 0)
             {
-
                 // Loop through all the users that left a favorite
-                for (Iterator<Map.Entry<String, Integer>> entryIt = userMap.entrySet().iterator(); entryIt.hasNext();)
+                for (Iterator<Map.Entry<String, Integer>> entryIt = shouteeMap.entrySet().iterator(); entryIt.hasNext();)
                 {
                     // Check if we need to stop
                     if (model.getStopFlag()) {
@@ -100,14 +104,14 @@ public class ThankingTask extends Task<Void> {
                     view.print("Processing " + shoutee);
 
                     // Load other user's page
-                    String shouteeLink = String.format("http://www.furaffinity.net/user/%s/",
+                    String shouteeLink = String.format(Constants.FA_BASE_URL + "user/%s/",
                             shoutee.replace("_", ""));
-                    HtmlPage otherUserPage = model.getWebClient().getPage(shouteeLink);
+                    HtmlPage shouteeUserPage = model.getWebClient().getPage(shouteeLink);
 
-                    String src = otherUserPage.getWebResponse().getContentAsString();
+                    String src = shouteeUserPage.getWebResponse().getContentAsString();
 
                     // Get the form
-                    List<HtmlForm> formList = otherUserPage.getForms();
+                    List<HtmlForm> formList = shouteeUserPage.getForms();
 
                     // Search for shouts made by user and other user
                     matcher = commentPattern.matcher(src);
@@ -151,10 +155,10 @@ public class ThankingTask extends Task<Void> {
 
                     // Set inside the shout box and submit
                     shoutBox.setText(message);
-                    otherUserPage = submitButton.click();
+                    shouteeUserPage = submitButton.click();
 
                     // Check the source of response
-                    src = otherUserPage.getWebResponse().getContentAsString();
+                    src = shouteeUserPage.getWebResponse().getContentAsString();
                     matcher = commentPattern.matcher(src);
 
                     // See if user is there
@@ -201,6 +205,10 @@ public class ThankingTask extends Task<Void> {
                     }
                 }
             }
+
+            // Print favorites
+            for (Favorite favorite : favoriteList)
+                model.getFavWriter().printFavorite(favorite);
 
             // Get the login form
             List<HtmlForm> formList = userPageLink.getForms();

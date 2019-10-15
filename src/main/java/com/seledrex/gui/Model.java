@@ -3,6 +3,7 @@ package com.seledrex.gui;
 import com.gargoylesoftware.htmlunit.CookieManager;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.seledrex.util.Constants;
+import com.seledrex.util.FavWriter;
 import com.seledrex.util.Group;
 import com.seledrex.util.ShoutWriter;
 
@@ -15,6 +16,7 @@ public class Model {
     private Properties props;
     private WebClient webClient;
     private ShoutWriter shoutWriter;
+    private FavWriter favWriter;
 
     private boolean foundConfig;
     private boolean stopFlag;
@@ -53,6 +55,7 @@ public class Model {
 
         try {
             shoutWriter = new ShoutWriter();
+            favWriter = new FavWriter();
         } catch (Exception e) {
             e.printStackTrace();
             System.exit(1);
@@ -75,6 +78,7 @@ public class Model {
         // Close stuff
         webClient.close();
         shoutWriter.close();
+        favWriter.close();
     }
 
     public boolean getStopFlag() {
@@ -87,6 +91,10 @@ public class Model {
 
     public ShoutWriter getShoutWriter() {
         return shoutWriter;
+    }
+
+    public FavWriter getFavWriter() {
+        return favWriter;
     }
 
     public String getUsername() {
