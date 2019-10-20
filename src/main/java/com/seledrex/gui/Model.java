@@ -38,6 +38,8 @@ public class Model {
         webClient.getOptions().setCssEnabled(false);
         webClient.getOptions().setJavaScriptEnabled(false);
         webClient.getOptions().setTimeout(30000);
+        webClient.getOptions().setThrowExceptionOnFailingStatusCode(false);
+        webClient.waitForBackgroundJavaScript(10_000);
 
         // Enable cookies
         CookieManager manager = webClient.getCookieManager();
