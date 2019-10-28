@@ -36,10 +36,14 @@ public class Model {
         // Create new web client
         webClient = new WebClient();
         webClient.getOptions().setCssEnabled(false);
-        webClient.getOptions().setJavaScriptEnabled(false);
+        webClient.getOptions().setJavaScriptEnabled(true);
         webClient.getOptions().setTimeout(30000);
         webClient.getOptions().setThrowExceptionOnFailingStatusCode(false);
         webClient.waitForBackgroundJavaScript(10_000);
+        webClient.waitForBackgroundJavaScriptStartingBefore(10000);
+        webClient.setJavaScriptTimeout(10000);
+        webClient.getOptions().setRedirectEnabled(true);
+        webClient.getCache().setMaxSize(0);
 
         // Enable cookies
         CookieManager manager = webClient.getCookieManager();
