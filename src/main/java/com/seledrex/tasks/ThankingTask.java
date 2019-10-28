@@ -9,6 +9,7 @@ import com.seledrex.util.Favorite;
 import com.seledrex.util.Group;
 import javafx.concurrent.Task;
 
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.regex.Matcher;
@@ -153,8 +154,11 @@ public class ThankingTask extends Task<Void> {
                                 return model.getMessages().get(rand);
                             });
 
+                    // Fix character encoding
+                    String encodedMessage = new String(message.getBytes(), StandardCharsets.ISO_8859_1);
+
                     // Set inside the shout box and submit
-                    shoutBox.setText(message);
+                    shoutBox.setText(encodedMessage);
                     shouteeUserPage = submitButton.click();
 
                     // Check the source of response

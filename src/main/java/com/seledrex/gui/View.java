@@ -20,6 +20,7 @@ import java.io.File;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.Optional;
+import java.util.logging.Level;
 
 public class View extends Application implements ChangeListener<Boolean> {
 
@@ -42,6 +43,7 @@ public class View extends Application implements ChangeListener<Boolean> {
 
     @Override
     public void init() {
+        java.util.logging.Logger.getLogger("com.gargoylesoftware").setLevel(Level.OFF);
         model = new Model();
         controller = new Controller(model, this);
     }
