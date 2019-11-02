@@ -155,7 +155,7 @@ public class ThankingTask extends Task<Void> {
                             });
 
                     // Fix character encoding
-                    String encodedMessage = new String(message.getBytes(), StandardCharsets.ISO_8859_1);
+                    String encodedMessage = new String(message.getBytes(), StandardCharsets.UTF_8);
 
                     // Set inside the shout box and submit
                     shoutBox.setText(encodedMessage);
