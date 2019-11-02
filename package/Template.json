@@ -1,0 +1,46 @@
+{
+  "username": "Put your Username here!",
+  "messages": [
+    "Default Message 1",
+    "Default Message 2",
+    "Default Message 3"
+  ],
+  "groups": {
+    "GroupName1": {
+      "users": [
+        "User1",
+		"User2",
+		"User3"
+      ],
+      "messages": [
+        "Message 1 for this Group",
+		"Message 2 for this Group",
+		"Message 3 For this Group"
+      ]
+    },
+    "GroupName2": {
+      "users": [
+        "User1",
+        "User2",
+        "User3"
+      ],
+      "messages": [
+        "Message 1 for this Group",
+		"Message 2 for this Group",
+		"Message 3 For this Group"
+      ]
+    },
+    "GroupName3": {
+      "users": [
+        "User1",
+        "User2",
+        "User3"
+      ],
+      "messages": [
+        "Message 1 for this Group",
+		"Message 2 for this Group",
+		"Message 3 For this Group"
+      ]
+    }
+  }
+}
