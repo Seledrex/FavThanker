@@ -36,7 +36,7 @@ public class Model {
         // Create new web client
         webClient = new WebClient();
         webClient.getOptions().setCssEnabled(false);
-        webClient.getOptions().setJavaScriptEnabled(true);
+        webClient.getOptions().setJavaScriptEnabled(false);
         webClient.getOptions().setTimeout(30000);
         webClient.getOptions().setThrowExceptionOnFailingStatusCode(false);
         webClient.waitForBackgroundJavaScript(10_000);
