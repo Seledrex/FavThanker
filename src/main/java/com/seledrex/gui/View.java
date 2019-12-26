@@ -183,6 +183,10 @@ public class View extends Application implements ChangeListener<Boolean> {
         }
     }
 
+    public static void main(String[] args) {
+        launch(args);
+    }
+
     void setStateInProgress() {
         // Update progress bar
         progressBar.setProgress(ProgressBar.INDETERMINATE_PROGRESS);
