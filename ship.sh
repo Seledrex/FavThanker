@@ -17,7 +17,7 @@ if test -f "$FILE"; then
   unzip FavThanker.zip $JAR_TO_KEEP
   cp $FILE "$JAR_TO_UPDATE"
   rm FavThanker.zip
-  zip -j FavThanker.zip package/start.bat package/Template.json $JAR_TO_KEEP "$JAR_TO_UPDATE"
+  zip -j FavThanker.zip package/Template.json $JAR_TO_KEEP "$JAR_TO_UPDATE"
   rm "$JAR_TO_UPDATE"
   rm $JAR_TO_KEEP
   echo "Done packaging!"
