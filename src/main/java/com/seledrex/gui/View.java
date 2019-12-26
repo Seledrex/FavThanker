@@ -156,6 +156,8 @@ public class View extends Application implements ChangeListener<Boolean> {
 
         // Set up stage
         stage = primaryStage;
+        stage.setMinWidth(600);
+        stage.setMinHeight(300);
         stage.setResizable(false);
         stage.setTitle(Constants.TITLE);
         stage.setScene(scene);
@@ -275,6 +277,7 @@ public class View extends Application implements ChangeListener<Boolean> {
         alert.setTitle("Error");
         alert.setHeaderText("An error has occurred.");
         alert.setContentText(e.getMessage());
+        alert.setResizable(true);
 
         // Create expandable Exception.
         StringWriter sw = new StringWriter();
@@ -310,6 +313,7 @@ public class View extends Application implements ChangeListener<Boolean> {
         Dialog<String[]> dialog = new Dialog<>();
         dialog.setTitle("Login Dialog");
         dialog.setHeaderText("Enter password and captcha.");
+        dialog.setResizable(true);
 
         // Set the captcha
         dialog.setGraphic(new ImageView(new File("captcha.jpg").toURI().toString()));
