@@ -1,15 +1,17 @@
 # FavThanker
 
-This is an application used to automate thanking people for favorites on Furaffinity. Built using Java, JavaFX, and HtmlUnit.
+This is an application used to automate thanking people for favorites on Furaffinity.
 
-## How it Works
+## Specifications
 
-First users must create a JSON file which contains the user's username, password, and an array of pre-made thank you messages he or she wishes to use as shouts to other users. When starting the program for the first time, the user then must select their JSON file. A captcha prompt is then displayed so the user can authenticate with FA. After this the user can start thanking people for favorites by pressing the 'Start' button. The application will check the user's notifications and leave shouts at the corresponding users who left favorites. The shout text content will be randomly chosen from the messages array in the JSON. The application will only send a shout if the user has not recently left a shout there (not appearing on the other user's page). In addition, it will check to make sure the user to be shouted at does not want shouts and accordingly avoids shouting at them. Once finished, the application will clear the user's favorite notifications from FA. The next time the application is run, the last user will automatically be logged in.
+- Java 11
+- JavaFX 11
+- HtmlUnit
 
 ## System Requirements
 
-- Windows (other OSs supported later)
-- Latest Java installed
+- Windows and Linux
+- Java installed
 - Must use the FA beta theme
 
 ## Instructions
@@ -18,13 +20,23 @@ First users must create a JSON file which contains the user's username, password
 2. Extract and place the folder in desired location
 3. Edit the JSON file with a text editor
     - Fill in your FA username and password
-    - Can add as many pre-made messages to the message array
+    - Add pre-made messages to the message array
+    - Add groups for sending specific messages to specific groups of users
 4. Rename the JSON file to username.json with username being your FA username
-5. Start the program by running start.bat
-6. Select your JSON file with the application
-7. Press start to begin thanking
+5. Run the executable jar file corresponding to your operating system
+5. Select your JSON file within the application
+6. Press start to begin thanking
+
+## Notes
+
+- Favorite notifications will be automatically removed from your FA
+- Favorite notifications and shouts will be saved in CSV format in the application folder
+- Cookies are saved to the application folder so the user will stay logged in
+- The application will not leave a shout on user pages where the user has left a shout in their own shout box
+- Shouts are made every 20 seconds to avoid FA spam warnings
 
 ## Todo
+- Fix for new FA update
 - Command line version
     
    
