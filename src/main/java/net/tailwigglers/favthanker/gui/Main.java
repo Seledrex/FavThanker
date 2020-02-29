@@ -1,4 +1,4 @@
-package com.seledrex.gui;
+package net.tailwigglers.favthanker.gui;
 
 public class Main {
     public static void main(String[] args) {

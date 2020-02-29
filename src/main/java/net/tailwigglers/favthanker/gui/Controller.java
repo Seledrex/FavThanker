@@ -1,9 +1,9 @@
-package com.seledrex.gui;
+package net.tailwigglers.favthanker.gui;
 
-import com.seledrex.tasks.ThankingTask;
-import com.seledrex.tasks.LoadJsonTask;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import net.tailwigglers.favthanker.tasks.LoadJsonTask;
+import net.tailwigglers.favthanker.tasks.ThankingTask;
 
 import java.io.File;
 

@@ -1,10 +1,12 @@
-package com.seledrex.tasks;
+package net.tailwigglers.favthanker.tasks;
 
-import com.gargoylesoftware.htmlunit.html.*;
-import com.seledrex.gui.Model;
-import com.seledrex.gui.View;
-import com.seledrex.util.Group;
+import com.gargoylesoftware.htmlunit.html.HtmlAnchor;
+import com.gargoylesoftware.htmlunit.html.HtmlImage;
+import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import javafx.concurrent.Task;
+import net.tailwigglers.favthanker.gui.Model;
+import net.tailwigglers.favthanker.gui.View;
+import net.tailwigglers.favthanker.util.Group;
 
 import java.io.File;
 import java.util.ArrayList;

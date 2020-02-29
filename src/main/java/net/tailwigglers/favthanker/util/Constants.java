@@ -1,4 +1,4 @@
-package com.seledrex.util;
+package net.tailwigglers.favthanker.util;
 
 public class Constants {
 

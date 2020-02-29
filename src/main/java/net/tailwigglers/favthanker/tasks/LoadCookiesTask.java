@@ -1,10 +1,10 @@
-package com.seledrex.tasks;
+package net.tailwigglers.favthanker.tasks;
 
 import com.gargoylesoftware.htmlunit.util.Cookie;
-import com.seledrex.gui.Model;
-import com.seledrex.gui.View;
-import com.seledrex.util.Group;
 import javafx.concurrent.Task;
+import net.tailwigglers.favthanker.gui.Model;
+import net.tailwigglers.favthanker.gui.View;
+import net.tailwigglers.favthanker.util.Group;
 
 import java.io.File;
 import java.io.FileInputStream;

@@ -1,4 +1,4 @@
-package com.seledrex.util;
+package net.tailwigglers.favthanker.util;
 
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;

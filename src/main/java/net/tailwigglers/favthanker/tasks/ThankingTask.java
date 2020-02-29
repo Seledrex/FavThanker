@@ -1,13 +1,13 @@
-package com.seledrex.tasks;
+package net.tailwigglers.favthanker.tasks;
 
 import com.gargoylesoftware.htmlunit.ElementNotFoundException;
 import com.gargoylesoftware.htmlunit.html.*;
-import com.seledrex.gui.Model;
-import com.seledrex.gui.View;
-import com.seledrex.util.Constants;
-import com.seledrex.util.Favorite;
-import com.seledrex.util.Group;
 import javafx.concurrent.Task;
+import net.tailwigglers.favthanker.gui.Model;
+import net.tailwigglers.favthanker.gui.View;
+import net.tailwigglers.favthanker.util.Constants;
+import net.tailwigglers.favthanker.util.Favorite;
+import net.tailwigglers.favthanker.util.Group;
 
 import java.nio.charset.StandardCharsets;
 import java.util.*;

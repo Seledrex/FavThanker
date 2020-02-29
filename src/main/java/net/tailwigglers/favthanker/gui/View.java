@@ -1,6 +1,5 @@
-package com.seledrex.gui;
+package net.tailwigglers.favthanker.gui;
 
-import com.seledrex.util.Constants;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
@@ -15,6 +14,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import net.tailwigglers.favthanker.util.Constants;
 
 import java.io.File;
 import java.io.PrintWriter;

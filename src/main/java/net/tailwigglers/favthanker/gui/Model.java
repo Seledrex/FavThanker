@@ -1,11 +1,11 @@
-package com.seledrex.gui;
+package net.tailwigglers.favthanker.gui;
 
 import com.gargoylesoftware.htmlunit.CookieManager;
 import com.gargoylesoftware.htmlunit.WebClient;
-import com.seledrex.util.Constants;
-import com.seledrex.util.FavWriter;
-import com.seledrex.util.Group;
-import com.seledrex.util.ShoutWriter;
+import net.tailwigglers.favthanker.util.Constants;
+import net.tailwigglers.favthanker.util.FavWriter;
+import net.tailwigglers.favthanker.util.Group;
+import net.tailwigglers.favthanker.util.ShoutWriter;
 
 import java.io.*;
 import java.util.ArrayList;
