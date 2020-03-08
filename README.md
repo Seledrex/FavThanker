@@ -2,6 +2,8 @@
 
 This is an application used to automate thanking people for favorites on Furaffinity.
 
+![Screenshot](Screenshot.png)
+
 ## Specifications
 
 - Java 11
@@ -19,13 +21,13 @@ This is an application used to automate thanking people for favorites on Furaffi
 1. Download [FavThanker.zip](https://github.com/Seledrex/FavThanker/raw/master/FavThanker.zip)
 2. Extract and place the folder in desired location
 3. Edit the JSON file with a text editor
-    - Fill in your FA username and password
-    - Add pre-made messages to the message array
-    - Add groups for sending specific messages to specific groups of users
+   - Fill in your FA username and password
+   - Add pre-made messages to the message array
+   - Add groups for sending specific messages to specific groups of users
 4. Rename the JSON file to username.json with username being your FA username
 5. Run the executable jar file corresponding to your operating system
-5. Select your JSON file within the application
-6. Press start to begin thanking
+6. Select your JSON file within the application
+7. Press start to begin thanking
 
 ## Notes
 
@@ -40,8 +42,6 @@ This is an application used to automate thanking people for favorites on Furaffi
 `mvn clean compile assembly:single`
 
 ## Todo
+
 - Fix for new FA update
 - Command line version
-    
-   
-
