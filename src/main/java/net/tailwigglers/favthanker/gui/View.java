@@ -38,9 +38,18 @@ public class View extends Application implements ChangeListener<Boolean> {
     private Label progressLabel;
 
     private TextArea textArea;
+    private Label faStatusLabel;
 
     private Region veil;
     private Stage stage;
+    
+    /**
+     * This flag is used at startup. Once the login task has finished, it will
+     * set this to true if we can enable the startup button. Then once the check
+     * FA online task has finished, it will enable the start button after checking
+     * this flag. This could be a source of bugs for race conditions!
+     */
+    private boolean enableStartButton = false;
 
     @Override
     public void init() {
@@ -85,6 +94,17 @@ public class View extends Application implements ChangeListener<Boolean> {
         textArea.textProperty().addListener((observable, oldValue, newValue) -> textArea.setScrollTop(Double.MAX_VALUE));
         textArea.setEditable(false);
         textArea.focusedProperty().addListener(this);
+
+        Label faStatusPrefixLabel = new Label(Constants.FA_STATUS);
+        faStatusPrefixLabel.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
+        faStatusPrefixLabel.setAlignment(Pos.CENTER_LEFT);
+
+        faStatusLabel = new Label(Constants.FA_OFFLINE);
+        faStatusLabel.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
+        faStatusLabel.setAlignment(Pos.CENTER_LEFT);
+        faStatusLabel.setStyle("-fx-text-fill: red; -fx-font-weight: bold;");
+
+        HBox faStatusBox = new HBox(faStatusPrefixLabel, faStatusLabel);
 
         Label copyrightLabel = new Label(Constants.COPYRIGHT);
         copyrightLabel.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
@@ -153,6 +173,10 @@ public class View extends Application implements ChangeListener<Boolean> {
         GridPane.setFillWidth(textArea, true);
         GridPane.setFillHeight(textArea, true);
 
+        grid.add(faStatusBox,0,5);
+        GridPane.setFillWidth(faStatusBox, true);
+        GridPane.setFillHeight(faStatusBox, true);
+
         grid.add(copyrightLabel,1, 5);
         GridPane.setFillWidth(copyrightLabel, true);
         GridPane.setFillHeight(copyrightLabel, true);
@@ -191,6 +215,8 @@ public class View extends Application implements ChangeListener<Boolean> {
         } else {
             veil.setVisible(false);
         }
+
+        controller.checkFaOnline();
     }
 
     @Override
@@ -284,8 +310,8 @@ public class View extends Application implements ChangeListener<Boolean> {
     public void welcomeUser() {
         Platform.runLater(() -> {
             userLabel.setText("Welcome " + model.getUsername() + "!");
-            startButton.setDisable(false);
             veil.setVisible(false);
+            enableStartButton = true;
         });
     }
 
@@ -406,5 +432,21 @@ public class View extends Application implements ChangeListener<Boolean> {
     @Override
     public void changed(ObservableValue<? extends Boolean> observableValue, Boolean aBoolean, Boolean t1) {
         Platform.runLater(() -> userLabel.requestFocus());
+    }
+
+    public void setFaStatusLabel(boolean isOnline) {
+        Platform.runLater(() -> {
+            if (isOnline) {
+                faStatusLabel.setText(Constants.FA_ONLINE);
+                faStatusLabel.setStyle("-fx-text-fill: green; -fx-font-weight: bold;");
+                if (enableStartButton) {
+                    startButton.setDisable(false);
+                }
+            } else {
+                faStatusLabel.setText(Constants.FA_OFFLINE);
+                faStatusLabel.setStyle("-fx-text-fill: red; -fx-font-weight: bold;");
+                startButton.setDisable(true);
+            }
+        });
     }
 }
