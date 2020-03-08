@@ -12,6 +12,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
+import javafx.scene.text.TextAlignment;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import net.tailwigglers.favthanker.util.Constants;
@@ -85,12 +86,20 @@ public class View extends Application implements ChangeListener<Boolean> {
         textArea.setEditable(false);
         textArea.focusedProperty().addListener(this);
 
+        Label copyrightLabel = new Label(Constants.COPYRIGHT);
+        copyrightLabel.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
+        copyrightLabel.setAlignment(Pos.CENTER);
+
+        Label versionLabel = new Label(Constants.VERSION);
+        versionLabel.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
+        versionLabel.setAlignment(Pos.CENTER_RIGHT);
+
         // Create grid layout
         GridPane grid = new GridPane();
         grid.setAlignment(Pos.CENTER);
         grid.setHgap(10);
         grid.setVgap(10);
-        grid.setPadding(new Insets(25, 25, 25, 25));
+        grid.setPadding(new Insets(10, 25, 5, 25));
 
         int numCols = 3;
         for (int i = 0; i < numCols; i++) {
@@ -99,19 +108,21 @@ public class View extends Application implements ChangeListener<Boolean> {
             grid.getColumnConstraints().add(col);
         }
 
+        RowConstraints row0 = new RowConstraints();
         RowConstraints row1 = new RowConstraints();
         RowConstraints row2 = new RowConstraints();
         RowConstraints row3 = new RowConstraints();
         RowConstraints row4 = new RowConstraints();
         RowConstraints row5 = new RowConstraints();
 
+        row0.setPercentHeight(10.0);
         row1.setPercentHeight(10.0);
         row2.setPercentHeight(10.0);
-        row3.setPercentHeight(10.0);
-        row4.setPercentHeight(35.0);
-        row5.setPercentHeight(35.0);
+        row3.setPercentHeight(30.0);
+        row4.setPercentHeight(30.0);
+        row5.setPercentHeight(10.0);
 
-        grid.getRowConstraints().addAll(row1, row2, row3, row4, row5);
+        grid.getRowConstraints().addAll(row0, row1, row2, row3, row4, row5);
 
         // Add GUI components to grid
         grid.add(userLabel, 0, 0, 3, 1);
@@ -138,9 +149,17 @@ public class View extends Application implements ChangeListener<Boolean> {
         GridPane.setFillWidth(progressLabel, true);
         GridPane.setFillHeight(progressLabel, true);
 
-        grid.add(textArea, 0, 3, 3, 3);
+        grid.add(textArea, 0, 3, 3, 2);
         GridPane.setFillWidth(textArea, true);
         GridPane.setFillHeight(textArea, true);
+
+        grid.add(copyrightLabel,1, 5);
+        GridPane.setFillWidth(copyrightLabel, true);
+        GridPane.setFillHeight(copyrightLabel, true);
+
+        grid.add(versionLabel,2, 5);
+        GridPane.setFillWidth(versionLabel, true);
+        GridPane.setFillHeight(versionLabel, true);
 
         // Create veil to overlay GUI while loading
         veil = new Region();

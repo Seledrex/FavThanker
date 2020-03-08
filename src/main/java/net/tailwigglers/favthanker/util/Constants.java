@@ -21,6 +21,8 @@ public class Constants {
     public static final String STARTING = "Starting";
 
     public static final String TITLE = "FA Favorite Thanker";
+    public static final String VERSION = "Version 1.0";
+    public static final String COPYRIGHT = "© Tail Wigglers";
 
     public static final String FA_BASE_URL = "http://www.furaffinity.net/";
 
