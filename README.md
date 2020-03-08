@@ -35,6 +35,10 @@ This is an application used to automate thanking people for favorites on Furaffi
 - The application will not leave a shout on user pages where the user has left a shout in their own shout box
 - Shouts are made every 20 seconds to avoid FA spam warnings
 
+## Compiling
+
+`mvn clean compile assembly:single`
+
 ## Todo
 - Fix for new FA update
 - Command line version
