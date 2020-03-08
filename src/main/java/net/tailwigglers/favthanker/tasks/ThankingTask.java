@@ -13,7 +13,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class ThankingTask extends Task<Void> {
 
@@ -53,8 +52,7 @@ public class ThankingTask extends Task<Void> {
         while (numProcessed < favCount)
         {
             // Find favorites on user page
-            Pattern favPattern = Pattern.compile(Constants.FAV_PATTERN);
-            Matcher matcher = favPattern.matcher(userPageSrc);
+            Matcher matcher = Constants.FAV_PATTERN.matcher(userPageSrc);
 
             // Create map top hold favorite information
             HashMap<String, Integer> shouteeMap = new HashMap<>();
@@ -78,10 +76,6 @@ public class ThankingTask extends Task<Void> {
             // Done if no more favorites are found
             if (shouteeMap.isEmpty())
                 break;
-
-            // Patterns for comments and shout limit
-            Pattern commentPattern = Pattern.compile(Constants.COMMENT_PATTERN);
-            Pattern limitPattern = Pattern.compile(Constants.LIMIT_PATTERN);
 
             // Loop while there are still users in the map
             while (shouteeMap.size() != 0)
@@ -115,7 +109,7 @@ public class ThankingTask extends Task<Void> {
                     List<HtmlForm> formList = shouteeUserPage.getForms();
 
                     // Search for shouts made by user and other user
-                    matcher = commentPattern.matcher(src);
+                    matcher = Constants.COMMENT_PATTERN.matcher(src);
                     boolean foundUser = false;
                     while (matcher.find()) {
                         if (matcher.group(6).equals(model.getUsername().toLowerCase()) || matcher.group(6).equals(shoutee.toLowerCase())) {
@@ -163,7 +157,7 @@ public class ThankingTask extends Task<Void> {
 
                     // Check the source of response
                     src = shouteeUserPage.getWebResponse().getContentAsString();
-                    matcher = commentPattern.matcher(src);
+                    matcher = Constants.COMMENT_PATTERN.matcher(src);
 
                     // See if user is there
                     while (matcher.find()) {
@@ -192,20 +186,10 @@ public class ThankingTask extends Task<Void> {
                             Thread.sleep(Constants.WAIT_SHOUT);
                         }
                     } else {
-                        // See why shout failed
+                        // For safety, we will just throw an exception here!
                         view.print("Shout failed for " + shoutee);
-                        matcher = limitPattern.matcher(src);
-
-                        // Perform cool down if too many shouts were made
-                        if (matcher.find()) {
-                            view.print("15 shouts made within 5 minutes!");
-                            view.print("Cooldown period beginning...");
-                            for (int i = 0; i < 5; i++) {
-                                Thread.sleep(Constants.ONE_MINUTE);
-                                view.print("...");
-                            }
-                            view.print("Proceeding...");
-                        }
+                        System.err.println(src);
+                        throw new Exception("Shout failed for " + shoutee);
                     }
                 }
             }
@@ -214,9 +198,15 @@ public class ThankingTask extends Task<Void> {
             for (Favorite favorite : favoriteList)
                 model.getFavWriter().printFavorite(favorite);
 
-            // Get the login form
+            // Get the correct form
             List<HtmlForm> formList = userPageLink.getForms();
-            HtmlForm form = formList.get(1);
+            HtmlForm form = formList.stream()
+                    .filter(htmlForm -> {
+                        List<HtmlInput> inputs = htmlForm.getInputsByName("favorites[]");
+                        return !inputs.isEmpty();
+                    })
+                    .findFirst()
+                    .orElseThrow(() -> new Exception("Could not find notifications form!"));
 
             // Get checkboxes
             List<HtmlInput> checkBoxInputs = form.getInputsByName("favorites[]");

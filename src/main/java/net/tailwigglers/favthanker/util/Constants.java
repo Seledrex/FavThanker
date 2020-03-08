@@ -1,9 +1,10 @@
 package net.tailwigglers.favthanker.util;
 
+import java.util.regex.Pattern;
+
 public class Constants {
 
     public static final int WAIT_SHOUT = 20000;
-    public static final int ONE_MINUTE = 60000;
 
     public static final String COOKIE_FILENAME = "cookie.file";
     public static final String CONFIG_FILENAME = "config.properties";
@@ -23,28 +24,27 @@ public class Constants {
 
     public static final String FA_BASE_URL = "http://www.furaffinity.net/";
 
-    public static final String FAV_PATTERN = "(name=\"favorites\\[]\" value=\")" +
-            "(\\d{9})" +
+    public static final Pattern FAV_PATTERN = Pattern.compile(
+            "(name=\"favorites\\[]\" value=\")" +
+            "(\\d+)" +
             "(\"><a href=\"/)" +
             "([^\"]*)" +
             "(\"><strong>)" +
             "([^<]*)" +
             "(</strong>)" +
-            "(</a> favorited <strong>\"<a href=\"/)" +
-            "(view/\\d++/)" +
-            "(\">)" +
-            "([^<]*)" +
-            "(</a>\"</strong>)";
+            "(</a> favorited <a href=\"/)" +
+            "(view/\\d+/)" +
+            "(\"><strong>\")" +
+            "([^\"]*)" +
+            "(\"</strong>)");
 
-    public static final String COMMENT_PATTERN = "(<a href=\")" +
+    public static final Pattern COMMENT_PATTERN = Pattern.compile(
+            "(<a href=\")" +
             "([^\"]*)" +
             "(\"><img class=\"comment_useravatar\" src=\")" +
             "([^\"]*)" +
             "(\" alt=\")" +
             "([^\"]*)" +
-            "(\" />)";
-
-    public static final String LIMIT_PATTERN = "You have posted 15 comments or shouts in the last 5 minutes. " +
-            "Please try again later.";
+            "(\" />)");
 
 }

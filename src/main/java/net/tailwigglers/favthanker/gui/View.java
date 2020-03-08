@@ -177,6 +177,7 @@ public class View extends Application implements ChangeListener<Boolean> {
     @Override
     public void stop() {
         try {
+            model.setStopFlag(true);
             model.persist();
         } catch (Exception e) {
             createExceptionDialog(e);
