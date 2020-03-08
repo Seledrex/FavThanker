@@ -43,5 +43,4 @@ This is an application used to automate thanking people for favorites on Furaffi
 
 ## Todo
 
-- Fix for new FA update
 - Command line version
