@@ -10,7 +10,7 @@ This is an application used to automate thanking people for favorites on Furaffi
 
 ## System Requirements
 
-- Windows and Linux
+- Windows or Linux
 - Java installed
 - Must use the FA beta theme
 
