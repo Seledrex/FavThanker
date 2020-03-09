@@ -21,7 +21,7 @@ This is an application used to automate thanking people for favorites on Furaffi
 1. Download [FavThanker.zip](https://github.com/Seledrex/FavThanker/raw/master/FavThanker.zip)
 2. Extract and place the folder in desired location
 3. Edit the JSON file with a text editor
-   - Fill in your FA username and password
+   - Fill in your FA username
    - Add pre-made messages to the message array
    - Add groups for sending specific messages to specific groups of users
 4. Rename the JSON file to username.json with username being your FA username
