@@ -20,8 +20,9 @@ public class Constants {
     public static final String STOPPED = "Stopped";
     public static final String STARTING = "Starting";
 
+    public static final String LOGO_FILEPATH = "logo.png";
     public static final String TITLE = "FA Favorite Thanker";
-    public static final String VERSION = "Version 1.01";
+    public static final String VERSION = "Version 1.02";
     public static final String COPYRIGHT = "© Tail Wigglers";
 
     public static final String FA_STATUS = "FA Status: ";

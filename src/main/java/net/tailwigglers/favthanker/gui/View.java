@@ -5,11 +5,13 @@ import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
+import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.text.TextAlignment;
@@ -17,9 +19,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import net.tailwigglers.favthanker.util.Constants;
 
-import java.io.File;
-import java.io.PrintWriter;
-import java.io.StringWriter;
+import java.io.*;
 import java.util.Optional;
 import java.util.logging.Level;
 
@@ -61,6 +61,7 @@ public class View extends Application implements ChangeListener<Boolean> {
     @Override
     public void start(Stage primaryStage) {
         // Set up GUI components
+
         userLabel = new Label(Constants.SELECT_USER_PROMPT);
         userLabel.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
         userLabel.setAlignment(Pos.CENTER);
@@ -110,6 +111,12 @@ public class View extends Application implements ChangeListener<Boolean> {
         copyrightLabel.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
         copyrightLabel.setAlignment(Pos.CENTER);
 
+        Image logoImage = new Image(Constants.LOGO_FILEPATH);
+        ImageView logoImageView = new ImageView();
+        logoImageView.setFitWidth(20);
+        logoImageView.setFitHeight(20);
+        logoImageView.setImage(logoImage);
+
         Label versionLabel = new Label(Constants.VERSION);
         versionLabel.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
         versionLabel.setAlignment(Pos.CENTER_RIGHT);
@@ -145,6 +152,11 @@ public class View extends Application implements ChangeListener<Boolean> {
         grid.getRowConstraints().addAll(row0, row1, row2, row3, row4, row5);
 
         // Add GUI components to grid
+
+        grid.add(logoImageView, 1, 5);
+        GridPane.setHalignment(logoImageView, HPos.RIGHT);
+        GridPane.setMargin(logoImageView, new Insets(0,15,0,0) );
+
         grid.add(userLabel, 0, 0, 3, 1);
         GridPane.setFillWidth(userLabel, true);
         GridPane.setFillHeight(userLabel, true);
