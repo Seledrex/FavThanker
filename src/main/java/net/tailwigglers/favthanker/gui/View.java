@@ -40,9 +40,6 @@ public class View extends Application implements ChangeListener<Boolean> {
     private TextArea textArea;
     private Label faStatusLabel;
 
-    private Image iconLogo;
-    private ImageView logo;
-
     private Region veil;
     private Stage stage;
     
@@ -114,11 +111,11 @@ public class View extends Application implements ChangeListener<Boolean> {
         copyrightLabel.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
         copyrightLabel.setAlignment(Pos.CENTER);
 
-        iconLogo = new Image("logo.png");
-        logo = new ImageView();
-        logo.setFitWidth(20);
-        logo.setFitHeight(20);
-        logo.setImage(iconLogo);
+        Image logoImage = new Image(Constants.LOGO_FILEPATH);
+        ImageView logoImageView = new ImageView();
+        logoImageView.setFitWidth(20);
+        logoImageView.setFitHeight(20);
+        logoImageView.setImage(logoImage);
 
         Label versionLabel = new Label(Constants.VERSION);
         versionLabel.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
@@ -156,9 +153,9 @@ public class View extends Application implements ChangeListener<Boolean> {
 
         // Add GUI components to grid
 
-        grid.add(logo, 1, 5);
-        GridPane.setHalignment(logo, HPos.RIGHT);
-        GridPane.setMargin(logo, new Insets(0,15,0,0) );
+        grid.add(logoImageView, 1, 5);
+        GridPane.setHalignment(logoImageView, HPos.RIGHT);
+        GridPane.setMargin(logoImageView, new Insets(0,15,0,0) );
 
         grid.add(userLabel, 0, 0, 3, 1);
         GridPane.setFillWidth(userLabel, true);
@@ -216,7 +213,7 @@ public class View extends Application implements ChangeListener<Boolean> {
         stage = primaryStage;
         stage.setMinWidth(600);
         stage.setMinHeight(300);
-        stage.setResizable(true);
+        stage.setResizable(false);
         stage.setTitle(Constants.TITLE);
         stage.setScene(scene);
         stage.show();
