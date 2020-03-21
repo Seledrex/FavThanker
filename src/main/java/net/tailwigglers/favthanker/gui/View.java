@@ -14,12 +14,13 @@ import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
-import javafx.scene.text.TextAlignment;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import net.tailwigglers.favthanker.util.Constants;
 
-import java.io.*;
+import java.io.File;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.Optional;
 import java.util.logging.Level;
 
@@ -216,6 +217,7 @@ public class View extends Application implements ChangeListener<Boolean> {
         stage.setResizable(false);
         stage.setTitle(Constants.TITLE);
         stage.setScene(scene);
+        stage.getIcons().add(logoImage);
         stage.show();
 
         // Login if previously logged in
