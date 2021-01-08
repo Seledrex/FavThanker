@@ -333,8 +333,7 @@ public class View extends Application implements ChangeListener<Boolean> {
         Platform.runLater(() -> textArea.appendText(text + "\n"));
     }
 
-    private void createExceptionDialog(Throwable e)
-    {
+    private void createExceptionDialog(Throwable e) {
         e.printStackTrace();
 
         Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -342,6 +341,7 @@ public class View extends Application implements ChangeListener<Boolean> {
         alert.setHeaderText("An error has occurred.");
         alert.setContentText(e.getMessage());
         alert.setResizable(true);
+        alert.initOwner(stage);
 
         // Create expandable Exception.
         StringWriter sw = new StringWriter();
@@ -372,15 +372,13 @@ public class View extends Application implements ChangeListener<Boolean> {
         veil.setVisible(false);
     }
 
-    public Optional<String[]> showLoginDialog() {
+    public Optional<String[]> showAddCookiesDialog() {
         // Create the custom dialog.
         Dialog<String[]> dialog = new Dialog<>();
-        dialog.setTitle("Login Dialog");
-        dialog.setHeaderText("Enter password and captcha.");
+        dialog.setTitle("Add Cookies");
+        dialog.setHeaderText("Enter FA cookies from your web browser.");
         dialog.setResizable(true);
-
-        // Set the captcha
-        dialog.setGraphic(new ImageView(new File("captcha.jpg").toURI().toString()));
+        dialog.initOwner(stage);
 
         // Set the button types.
         ButtonType enterButtonType = new ButtonType("Enter", ButtonBar.ButtonData.OK_DONE);
@@ -392,23 +390,23 @@ public class View extends Application implements ChangeListener<Boolean> {
         grid.setVgap(10);
         grid.setPadding(new Insets(20, 150, 10, 10));
 
-        TextField captchaField = new TextField();
-        captchaField.setPromptText("Captcha");
+        TextField cookieAField = new TextField();
+        cookieAField.setPromptText("Cookie A");
 
-        TextField passwordField = new PasswordField();
-        passwordField.setPromptText("Password");
+        TextField cookieBField = new TextField();
+        cookieBField.setPromptText("Cookie B");
 
-        grid.add(new Label("Password:"), 0, 0);
-        grid.add(passwordField, 1, 0);
-        grid.add(new Label("Captcha:"), 0, 1);
-        grid.add(captchaField, 1, 1);
+        grid.add(new Label("Cookie A:"), 0, 0);
+        grid.add(cookieBField, 1, 0);
+        grid.add(new Label("Cookie B:"), 0, 1);
+        grid.add(cookieAField, 1, 1);
 
-        // Enable/Disable enter button depending on whether a captcha was entered.
+        // Enable/Disable enter button depending on whether a cookie was entered.
         Node enterButton = dialog.getDialogPane().lookupButton(enterButtonType);
         enterButton.setDisable(true);
 
         // Do some validation
-        captchaField.textProperty().addListener((observable, oldValue, newValue) ->
+        cookieAField.textProperty().addListener((observable, oldValue, newValue) ->
                 enterButton.setDisable(newValue.trim().isEmpty()));
 
         dialog.getDialogPane().setContent(grid);
@@ -417,8 +415,8 @@ public class View extends Application implements ChangeListener<Boolean> {
         dialog.setResultConverter(dialogButton -> {
             if (dialogButton == enterButtonType) {
                 String[] result = new String[2];
-                result[0] = passwordField.getText();
-                result[1] = captchaField.getText();
+                result[0] = cookieBField.getText();
+                result[1] = cookieAField.getText();
                 return result;
             }
             return null;

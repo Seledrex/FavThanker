@@ -12,6 +12,7 @@ import org.json.simple.parser.JSONParser;
 import java.io.File;
 import java.io.FileReader;
 import java.util.ArrayList;
+import java.util.Optional;
 
 public class LoadJsonTask extends Task<Void> {
 
@@ -85,7 +86,17 @@ public class LoadJsonTask extends Task<Void> {
             new Thread(new LoadCookiesTask(model, view, cookieFile, tempUsername, tempMessages, tempGroups)).start();
         }
         else {
-            new Thread(new GetCaptchaTask(model, view, tempUsername, tempMessages, tempGroups)).start();
+            // Show dialog and get result
+            Optional<String[]> result = view.showAddCookiesDialog();
+
+            if (result.isPresent()) {
+                String cookieA = result.get()[0];
+                String cookieB = result.get()[1];
+
+                new Thread(new VerifyLoginTask(model, view, tempUsername, tempMessages, tempGroups, cookieA, cookieB)).start();
+            } else {
+                view.setVeilVisible(false);
+            }
         }
     }
 }
