@@ -50,12 +50,12 @@ public class LoadCookiesTask extends Task<Void> {
             model.getWebClient().getCookieManager().addCookie(cookie);
         }
 
-        model.setUsername(tempUsername);
-        model.setMessages(tempMessages);
-        model.setGroups(tempGroups);
-        view.welcomeUser();
-
         return null;
+    }
+
+    @Override
+    protected void succeeded() {
+        new Thread(new VerifyLoginTask(model, view, tempUsername, tempMessages, tempGroups)).start();
     }
 
     @Override

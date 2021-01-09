@@ -22,7 +22,7 @@ public class Constants {
 
     public static final String LOGO_FILEPATH = "logo.png";
     public static final String TITLE = "FA Favorite Thanker";
-    public static final String VERSION = "Version 1.03";
+    public static final String VERSION = "Version 1.04";
     public static final String COPYRIGHT = "© Tail Wigglers";
 
     public static final String FA_STATUS = "FA Status: ";
