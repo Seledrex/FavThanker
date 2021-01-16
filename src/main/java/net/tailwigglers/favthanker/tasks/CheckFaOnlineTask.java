@@ -8,8 +8,8 @@ import net.tailwigglers.favthanker.util.Constants;
 
 public class CheckFaOnlineTask extends Task<Void> {
 
-    private Model model;
-    private View view;
+    private final Model model;
+    private final View view;
 
     public CheckFaOnlineTask(Model model, View view) {
         this.model = model;

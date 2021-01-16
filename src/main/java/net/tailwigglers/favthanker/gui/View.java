@@ -43,14 +43,9 @@ public class View extends Application implements ChangeListener<Boolean> {
 
     private Region veil;
     private Stage stage;
-    
-    /**
-     * This flag is used at startup. Once the login task has finished, it will
-     * set this to true if we can enable the startup button. Then once the check
-     * FA online task has finished, it will enable the start button after checking
-     * this flag. This could be a source of bugs for race conditions!
-     */
-    private boolean enableStartButton = false;
+
+    private boolean verifiedLogin = false;
+    private boolean faOnline = false;
 
     @Override
     public void init() {
@@ -325,7 +320,11 @@ public class View extends Application implements ChangeListener<Boolean> {
         Platform.runLater(() -> {
             userLabel.setText("Welcome " + model.getUsername() + "!");
             veil.setVisible(false);
-            enableStartButton = true;
+            verifiedLogin = true;
+
+            if (faOnline) {
+               startButton.setDisable(false);
+            }
         });
     }
 
@@ -448,10 +447,12 @@ public class View extends Application implements ChangeListener<Boolean> {
 
     public void setFaStatusLabel(boolean isOnline) {
         Platform.runLater(() -> {
-            if (isOnline) {
+            faOnline = isOnline;
+
+            if (faOnline) {
                 faStatusLabel.setText(Constants.FA_ONLINE);
                 faStatusLabel.setStyle("-fx-text-fill: green; -fx-font-weight: bold;");
-                if (enableStartButton) {
+                if (verifiedLogin) {
                     startButton.setDisable(false);
                 }
             } else {
