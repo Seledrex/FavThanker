@@ -95,12 +95,12 @@ public class ThankingTask extends Task<Void> {
                     // Get the entry and save the user and fav count
                     Map.Entry<String, Integer> entry = entryIt.next();
                     final String shoutee = entry.getKey();
+                    final String shouteeWithoutUnderscore = shoutee.replace("_", "");
                     int favs = entry.getValue();
                     view.print("Processing " + shoutee);
 
                     // Load other user's page
-                    String shouteeLink = String.format(Constants.FA_BASE_URL + "user/%s/",
-                            shoutee.replace("_", ""));
+                    String shouteeLink = String.format(Constants.FA_BASE_URL + "user/%s/", shouteeWithoutUnderscore);
                     HtmlPage shouteeUserPage = model.getWebClient().getPage(shouteeLink);
 
                     String src = shouteeUserPage.getWebResponse().getContentAsString();
@@ -112,7 +112,8 @@ public class ThankingTask extends Task<Void> {
                     matcher = Constants.COMMENT_PATTERN.matcher(src);
                     boolean foundUser = false;
                     while (matcher.find()) {
-                        if (matcher.group(6).equals(model.getUsername().toLowerCase()) || matcher.group(6).equals(shoutee.toLowerCase())) {
+                        if (matcher.group(6).equals(model.getUsername().toLowerCase())
+                                || matcher.group(6).equals(shouteeWithoutUnderscore.toLowerCase())) {
                             foundUser = true;
                             break;
                         }
